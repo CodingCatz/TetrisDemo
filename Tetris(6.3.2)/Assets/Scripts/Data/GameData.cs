@@ -1,8 +1,16 @@
-namespace Puzzle.Tetris
+ï»¿namespace Puzzle.Tetris
 {
     public class GameData
     {
-        
+        public int boardWidth;
+        public int boardHeight = 10;
+
+        //å»ºæ§‹å¼(åˆå§‹åŒ–classç”¨)
+        public GameData() 
+        {
+            boardWidth = 10;
+            boardHeight = 20;
+        }
     }
 
 }
@@ -11,7 +19,7 @@ namespace Puzzle.Match3
 {
     public class GameData
     {
-        //¤£¦PÃş«¬ªº¹CÀ¸«áºİ¸ê®Æ
+        //ä¸åŒé¡å‹çš„éŠæˆ²å¾Œç«¯è³‡æ–™
     }
 
 }

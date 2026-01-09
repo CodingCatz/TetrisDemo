@@ -1,25 +1,18 @@
-using UnityEngine;//¨Ï¥Î XXXXXX©R¦WªÅ¶¡
+ï»¿using UnityEngine;//ä½¿ç”¨ XXXXXXå‘½åç©ºé–“
 
-//©R¦WªÅ¶¡(µ{¦¡¸ê®Æ§¨ªº·§©À) ²Ä¤@¼h¦WºÙ(.ªº)¦¸¤@¼h¦WºÙ
+//å‘½åç©ºé–“(ç¨‹å¼è³‡æ–™å¤¾çš„æ¦‚å¿µ) ç¬¬ä¸€å±¤åç¨±(.çš„)æ¬¡ä¸€å±¤åç¨±
 namespace Puzzle.Tetris
 {
-    //¤½¶}Åv­­ Ãş§O ¦WºÙ (:Ä~©Ó) Unity°òÂ¦Ãş§O
+    //å…¬é–‹æ¬Šé™ é¡åˆ¥ åç¨± (:ç¹¼æ‰¿) UnityåŸºç¤é¡åˆ¥
     public class TetrisBasics : MonoBehaviour
     {
-        //¼Æ­È«Å§i(´ú¸Õ¥Î)
-        public int numberInt;//¾ã¼Æ
-        public float numberFloat;//¤p¼Æ
+        //ç‰©ä»¶å»ºç«‹ NEW ç›¸ç•¶æ–¼è¨˜æ†¶é«”ç©ºé–“çš„è¦åŠƒ
+        GameData data = new GameData();
 
-        //±Ò°Ê®É¹B¦æ¤@¦¸(ªì©l¤Æ)
         private void Start()
         {
-            Debug.Log(numberInt);
-        }
-
-        //¨C¤@´V(FPS)¹B¦æ¤@¦¸¡A¥Î¨Ó§ó·s
-        private void Update()
-        {
-            Debug.Log(numberInt);
+            Debug.Log(data.boardWidth);
+            Debug.Log(data.boardHeight);
         }
     }
 }
