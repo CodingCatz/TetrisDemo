@@ -269,8 +269,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
-  numberInt: 10
-  numberFloat: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

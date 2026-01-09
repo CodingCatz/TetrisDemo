@@ -3,7 +3,7 @@
     public class GameData
     {
         public int boardWidth;
-        public int boardHeight = 10;
+        public int boardHeight;
 
         /// <summary>
         /// 建構式(初始化class用)

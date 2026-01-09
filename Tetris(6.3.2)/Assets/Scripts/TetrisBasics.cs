@@ -6,8 +6,24 @@ namespace Puzzle.Tetris
     //公開權限 類別 名稱 (:繼承) Unity基礎類別
     public class TetrisBasics : MonoBehaviour
     {
-        //物件建立 NEW 相當於記憶體空間的規劃
-        GameData data = new GameData(5,10);
+        /// <summary>
+        /// [靜態]data資料物件實體
+        /// </summary>
+        private static GameData _data;
+        /// <summary>
+        /// [靜態]公開取用的data物件(唯讀)
+        /// </summary>
+        public static GameData data
+        {
+            get
+            {
+                if (_data == null)
+                {//如果(資料實體 不存在) 建立新的
+                    _data = new GameData();
+                }
+                return _data;
+            }
+        }
 
         private void Start()
         {
