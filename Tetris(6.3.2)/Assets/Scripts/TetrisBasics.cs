@@ -52,6 +52,16 @@ namespace Puzzle.Tetris
 
         private void Start()
         {
+            //FOR迴圈：起始值;終點值;迭代值;
+            for (int y = 0; y < data.boardHeight; y++)
+            {//巢狀迴圈：10 * 20 次
+                for (int x = 0; x < data.boardWidth; x++)
+                {
+                    //具現化物件到特定目標
+                    Instantiate(brickTMP, boardUI).name = $"Brick({x},{y})";
+                }
+            }
+
             _gameBoard = new bool[data.boardWidth, data.boardHeight];
             Debug.Log(_gameBoard[0,0]);
         }
