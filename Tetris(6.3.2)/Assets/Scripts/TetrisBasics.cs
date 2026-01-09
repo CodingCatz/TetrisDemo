@@ -29,9 +29,24 @@ namespace Puzzle.Tetris
 
         #region 遊戲核心資料結構
         /// <summary>
+        /// 磚塊模板物件
+        /// </summary>
+        public Brick brickTMP;
+        /// <summary>
+        /// 棋盤載體UI
+        /// </summary>
+        public Transform boardUI;
+        /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
         private bool[,] _gameBoard;
+        /// <summary>
+        /// 方塊種類(形狀)的列舉
+        /// </summary>
+        private enum Type
+        {
+            I, O, T, S, Z, L, J
+        }
         #endregion 遊戲核心資料結構
 
 
