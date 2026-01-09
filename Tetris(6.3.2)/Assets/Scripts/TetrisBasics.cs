@@ -6,6 +6,7 @@ namespace Puzzle.Tetris
     //公開權限 類別 名稱 (:繼承) Unity基礎類別
     public class TetrisBasics : MonoBehaviour
     {
+        #region 基礎資料
         /// <summary>
         /// [靜態]data資料物件實體
         /// </summary>
@@ -24,11 +25,20 @@ namespace Puzzle.Tetris
                 return _data;
             }
         }
+        #endregion 基礎資料
+
+        #region 遊戲核心資料結構
+        /// <summary>
+        /// 遊戲棋盤二維陣列(複數集合物件)
+        /// </summary>
+        private bool[,] _gameBoard;
+        #endregion 遊戲核心資料結構
+
 
         private void Start()
         {
-            Debug.Log(data.boardWidth);
-            Debug.Log(data.boardHeight);
+            _gameBoard = new bool[data.boardWidth, data.boardHeight];
+            Debug.Log(_gameBoard[0,0]);
         }
     }
 }
