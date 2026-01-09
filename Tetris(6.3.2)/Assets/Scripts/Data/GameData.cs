@@ -5,11 +5,24 @@
         public int boardWidth;
         public int boardHeight = 10;
 
-        //建構式(初始化class用)
+        /// <summary>
+        /// 建構式(初始化class用)
+        /// </summary>
         public GameData() 
         {
             boardWidth = 10;
             boardHeight = 20;
+        }
+
+        /// <summary>
+        /// 建構式(可自訂初始值版本)
+        /// </summary>
+        /// <param name="width">寬</param>
+        /// <param name="height">高</param>
+        public GameData(int width, int height)
+        {
+            boardWidth = width;
+            boardHeight = height;
         }
     }
 

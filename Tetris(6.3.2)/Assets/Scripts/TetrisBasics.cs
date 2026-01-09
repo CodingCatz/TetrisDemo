@@ -7,7 +7,7 @@ namespace Puzzle.Tetris
     public class TetrisBasics : MonoBehaviour
     {
         //物件建立 NEW 相當於記憶體空間的規劃
-        GameData data = new GameData();
+        GameData data = new GameData(5,10);
 
         private void Start()
         {
