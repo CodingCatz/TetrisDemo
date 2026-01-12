@@ -88,3 +88,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e48ad98b4ff585409f63530ae063e19, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Brick
+  orgColor: {r: 1, g: 1, b: 1, a: 0.5019608}
+  activeColor: {r: 0, g: 0.7924528, b: 0.61294955, a: 1}

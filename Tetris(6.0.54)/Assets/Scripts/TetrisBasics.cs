@@ -91,10 +91,11 @@ namespace Puzzle.Tetris
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     _gameBoard[x, y] = Instantiate(brickTMP, boardUI);
                     //為了辨識容易將每個Brick依座標命名
-                    _gameBoard[x, y].name = $"Brick({x},{y})";
+                    _gameBoard[x, y].Initial($"Brick({x},{y})");
                 }
             }
         }
+
         /// <summary>
         /// 以每秒跳動50次的固定更新週期刷新畫面
         /// </summary>
@@ -143,7 +144,8 @@ namespace Puzzle.Tetris
         private void DropBrick()
         {
             _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
-
+            _nextBrickType = data.RandomType();
+            _gameBoard[_currentBrick.x, _currentBrick.y].ActiveColor();
         }
         #endregion 遊戲邏輯控制
     }
