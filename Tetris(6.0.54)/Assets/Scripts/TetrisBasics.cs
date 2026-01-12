@@ -62,17 +62,10 @@ namespace Puzzle.Tetris
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
         private Brick[,] _gameBoard;
-        /// <summary>
-        /// 下個出現的方塊形狀
-        /// </summary>
-        private GameData.Type _nextBrickType;
-        /// <summary>
-        /// 當前操作中的方塊形狀
-        /// </summary>
-        private GameData.Type _currentBrickType;
+        
         #endregion 遊戲核心資料結構
 
-
+        #region 生命週期
         private void Start()
         {
             //初始化遊戲
@@ -102,5 +95,56 @@ namespace Puzzle.Tetris
                 }
             }
         }
+        /// <summary>
+        /// 以每秒跳動50次的固定更新週期刷新畫面
+        /// </summary>
+        private void FixedUpdate()
+        {
+            _timeCounter++;//計算畫面更新
+            //Debug.Log(_timeCounter);
+            if (_timeCounter >= COUNTER_TH)
+            {
+                _timeCounter = 0;
+                Debug.Log("畫面刷新");
+                DropBrick();
+            }
+        }
+        #endregion 生命週期
+
+        #region 遊戲邏輯控制
+        /// <summary>
+        /// [常數]方塊出生座標X
+        /// </summary>
+        private const int SPAWN_X = 4;
+        /// <summary>
+        /// [常數]方塊出生座標Y
+        /// </summary>
+        private const int SPAWN_Y = 19;
+        /// <summary>
+        /// [常數]更新計數器閾值
+        /// </summary>
+        private const int COUNTER_TH = 50;
+        /// <summary>
+        /// 更新計數器
+        /// </summary>
+        private int _timeCounter;
+        /// <summary>
+        /// 下個出現的方塊形狀
+        /// </summary>
+        private GameData.Type _nextBrickType;
+        /// <summary>
+        /// 當前操作中的方塊資料
+        /// </summary>
+        private BrickData _currentBrick;
+
+        /// <summary>
+        /// 方塊下墜
+        /// </summary>
+        private void DropBrick()
+        {
+            _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
+
+        }
+        #endregion 遊戲邏輯控制
     }
 }

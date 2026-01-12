@@ -2,6 +2,38 @@
 
 namespace Puzzle.Tetris
 {
+    /// <summary>
+    /// [結構]方塊資料組合
+    /// </summary>
+    public struct BrickData
+    {
+        /// <summary>
+        /// 錨點X座標
+        /// </summary>
+        public int x;
+        /// <summary>
+        /// 錨點Y座標
+        /// </summary>
+        public int y;
+        /// <summary>
+        /// 形狀類型
+        /// </summary>
+        public GameData.Type type;
+
+        /// <summary>
+        /// 設定初始狀態
+        /// </summary>
+        /// <param name="x">起始X</param>
+        /// <param name="y">起始Y</param>
+        /// <param name="type">形狀</param>
+        public void SetData(int x, int y, GameData.Type type)
+        {
+            this.x = x;
+            this.y = y;
+            this.type = type;
+        }
+    }
+
     public class GameData
     {
         #region 規格訊息
