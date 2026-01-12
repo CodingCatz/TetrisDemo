@@ -63,12 +63,13 @@ namespace Puzzle.Tetris
         /// </summary>
         private Brick[,] _gameBoard;
         /// <summary>
-        /// 方塊種類(形狀)的列舉
+        /// 下個出現的方塊形狀
         /// </summary>
-        private enum Type
-        {
-            I, O, T, S, Z, L, J
-        }
+        private GameData.Type _nextBrickType;
+        /// <summary>
+        /// 當前操作中的方塊形狀
+        /// </summary>
+        private GameData.Type _currentBrickType;
         #endregion 遊戲核心資料結構
 
 
@@ -76,6 +77,7 @@ namespace Puzzle.Tetris
         {
             //初始化遊戲
             InitialGame();
+            Debug.Log(_nextBrickType);
         }
 
         /// <summary>
@@ -83,6 +85,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void InitialGame()
         {
+            _nextBrickType = data.RandomType();
             _score = 0;
             _isGameOver = false;
             _gameBoard = new Brick[data.boardWidth, data.boardHeight];
