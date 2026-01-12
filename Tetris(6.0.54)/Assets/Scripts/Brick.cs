@@ -1,9 +1,9 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
 namespace Puzzle.Tetris
 {
     /// <summary>
-    /// ¿j¶ô³æ¤¸ª«¥ó
+    /// ç£šå¡Šå–®å…ƒç‰©ä»¶ï¼ŒåŒ…å«è³‡æ–™&ä»‹é¢
     /// </summary>
     public class Brick : MonoBehaviour
     {

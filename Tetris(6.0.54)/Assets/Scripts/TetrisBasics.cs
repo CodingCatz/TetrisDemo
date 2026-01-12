@@ -25,6 +25,28 @@ namespace Puzzle.Tetris
                 return _data;
             }
         }
+        /// <summary>
+        /// 級距常數
+        /// </summary>
+        private const int LV_RANGE = 1000;
+        /// <summary>
+        /// 經由分數計算出來的遊戲等級
+        /// </summary>
+        private int _level
+        {
+            get
+            {//級距：1000
+                return _score / LV_RANGE;
+            }
+        }
+        /// <summary>
+        /// 遊戲進行成績
+        /// </summary>
+        private int _score;
+        /// <summary>
+        /// 遊戲是否結束
+        /// </summary>
+        private bool _isGameOver;
         #endregion 基礎資料
 
         #region 遊戲核心資料結構
@@ -39,7 +61,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
-        private bool[,] _gameBoard;
+        private Brick[,] _gameBoard;
         /// <summary>
         /// 方塊種類(形狀)的列舉
         /// </summary>
@@ -52,18 +74,30 @@ namespace Puzzle.Tetris
 
         private void Start()
         {
+            //初始化遊戲
+            InitialGame();
+        }
+
+        /// <summary>
+        /// 初始化遊戲
+        /// </summary>
+        private void InitialGame()
+        {
+            _score = 0;
+            _isGameOver = false;
+            _gameBoard = new Brick[data.boardWidth, data.boardHeight];
+
             //FOR迴圈：起始值;終點值;迭代值;
             for (int y = 0; y < data.boardHeight; y++)
             {//巢狀迴圈：10 * 20 次
                 for (int x = 0; x < data.boardWidth; x++)
                 {
-                    //具現化物件到特定目標
-                    Instantiate(brickTMP, boardUI).name = $"Brick({x},{y})";
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    _gameBoard[x, y] = Instantiate(brickTMP, boardUI);
+                    //為了辨識容易將每個Brick依座標命名
+                    _gameBoard[x, y].name = $"Brick({x},{y})";
                 }
             }
-
-            _gameBoard = new bool[data.boardWidth, data.boardHeight];
-            Debug.Log(_gameBoard[0,0]);
         }
     }
 }
