@@ -70,7 +70,6 @@ namespace Puzzle.Tetris
         {
             //初始化遊戲
             InitialGame();
-            Debug.Log(_nextBrickType);
         }
 
         /// <summary>
@@ -145,7 +144,25 @@ namespace Puzzle.Tetris
         {
             _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
             _nextBrickType = data.RandomType();
-            _gameBoard[_currentBrick.x, _currentBrick.y].ActiveColor();
+            ValidCells();
+        }
+        /// <summary>
+        /// 可視化棋盤Cells
+        /// </summary>
+        private void ValidCells()
+        {
+            //取得相對應的方塊Cells座標
+            Vector2Int[] cells = GameData.cells[_currentBrick.type];
+            //FOREACH迴圈 (單一類型 in 該類型的集合)
+            foreach (Vector2Int cell in cells)
+            {//計算對應錨點後所有Cell實際位置
+                int X = _currentBrick.x + cell.x;
+                int Y = _currentBrick.y + cell.y;
+                if (Y < data.boardHeight)
+                {//避免超出的座標被渲染
+                    _gameBoard[X, Y].ActiveColor();
+                }
+            }
         }
         #endregion 遊戲邏輯控制
     }
