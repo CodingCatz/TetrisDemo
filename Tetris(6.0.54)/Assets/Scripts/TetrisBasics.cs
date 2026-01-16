@@ -173,17 +173,31 @@ namespace Puzzle.Tetris
         /// </summary>
         private void ValidCells()
         {
-            ClearAllBricks();
             //取得相對應的方塊Cells座標
-            Vector2Int[] cells = GameData.cells[_currentBrick.type];
+            Vector2Int[] cells = GameData.CalCells(_currentBrick);
+            bool valid = true;
+            //先檢查是否有需要更新視覺
+            foreach (Vector2Int cell in cells)
+            {
+                //1.左右超界檢查
+                //2.觸底檢查
+                if (cell.y < 0)
+                {
+                    valid = false;
+                    break;
+                }
+            }
+            //阻止更新
+            if (!valid) return;
+            //統一清除所有方塊顏色
+            ClearAllBricks();
             //FOREACH迴圈 (單一類型 in 該類型的集合)
             foreach (Vector2Int cell in cells)
             {//計算對應錨點後所有Cell實際位置
-                int X = _currentBrick.x + cell.x;
-                int Y = _currentBrick.y + cell.y;
-                if (Y < data.boardHeight)
+                
+                if (cell.y < data.boardHeight)
                 {//避免超出的座標被渲染
-                    _gameBoard[X, Y].ActiveColor();
+                    _gameBoard[cell.x, cell.y].ActiveColor();
                 }
             }
         }

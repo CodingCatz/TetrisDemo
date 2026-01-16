@@ -18,6 +18,22 @@ namespace Puzzle.Tetris
         /// </summary>
         public int y;
         /// <summary>
+        /// 錨點座標
+        /// </summary>
+        private Vector2Int _pos;
+        /// <summary>
+        /// 錨點座標公開接口
+        /// </summary>
+        public Vector2Int pos
+        {
+            get 
+            {
+                _pos.x = x;
+                _pos.y = y;
+                return _pos; 
+            }
+        }
+        /// <summary>
         /// 形狀類型
         /// </summary>
         public GameData.Type type;
@@ -140,6 +156,20 @@ namespace Puzzle.Tetris
                 new Vector2Int(0,0),//軸點
                 new Vector2Int(-1,0)
             });
+        }
+        /// <summary>
+        /// [工具]計算方塊組對應CellPos
+        /// </summary>
+        /// <param name="data">方塊組資料</param>
+        /// <returns>Cells座標陣列</returns>
+        public static Vector2Int[] CalCells(BrickData data)
+        {
+            Vector2Int[] calCells = new Vector2Int[4];
+            for (int i = 0; i < calCells.Length; i++)
+            {
+                calCells[i] = cells[data.type][i] + data.pos;
+            }
+            return calCells;
         }
         #endregion 規格訊息
 
