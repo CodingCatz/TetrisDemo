@@ -1,4 +1,5 @@
-﻿using UnityEngine;//使用 XXXXXX命名空間
+﻿using System;
+using UnityEngine;//使用 XXXXXX命名空間
 
 //命名空間(程式資料夾的概念) 第一層名稱(.的)次一層名稱
 namespace Puzzle.Tetris
@@ -91,6 +92,8 @@ namespace Puzzle.Tetris
                     _gameBoard[x, y] = Instantiate(brickTMP, boardUI);
                     //為了辨識容易將每個Brick依座標命名
                     _gameBoard[x, y].Initial($"Brick({x},{y})");
+                    //委託清除顏色功能到Action
+                    ClearAllBricks += _gameBoard[x, y].ClearColor;
                 }
             }
         }
@@ -143,6 +146,10 @@ namespace Puzzle.Tetris
         /// 當前操作中的方塊資料
         /// </summary>
         private BrickData _currentBrick;
+        /// <summary>
+        /// 所有Brick的ClearColor功能集合
+        /// </summary>
+        private Action ClearAllBricks;
 
         /// <summary>
         /// 方塊下墜
@@ -166,6 +173,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void ValidCells()
         {
+            ClearAllBricks();
             //取得相對應的方塊Cells座標
             Vector2Int[] cells = GameData.cells[_currentBrick.type];
             //FOREACH迴圈 (單一類型 in 該類型的集合)
