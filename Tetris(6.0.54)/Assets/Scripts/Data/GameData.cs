@@ -8,6 +8,7 @@ namespace Puzzle.Tetris
     /// </summary>
     public struct BrickData
     {
+        public bool isAlive;
         /// <summary>
         /// 錨點X座標
         /// </summary>
@@ -29,9 +30,15 @@ namespace Puzzle.Tetris
         /// <param name="type">形狀</param>
         public void SetData(int x, int y, GameData.Type type)
         {
+            isAlive = true;
             this.x = x;
             this.y = y;
             this.type = type;
+        }
+
+        public void Fall()
+        {
+            this.y -= 1;
         }
     }
 

@@ -111,6 +111,13 @@ namespace Puzzle.Tetris
         }
         #endregion 生命週期
 
+        #region 狀態數據
+        /// <summary>
+        /// 判定是否需要產生方塊組合
+        /// </summary>
+        private bool SpawnBrick => !_currentBrick.isAlive;
+        #endregion 狀態數據
+
         #region 遊戲邏輯控制
         /// <summary>
         /// [常數]方塊出生座標X
@@ -142,8 +149,16 @@ namespace Puzzle.Tetris
         /// </summary>
         private void DropBrick()
         {
-            _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
-            _nextBrickType = data.RandomType();
+            if (SpawnBrick)
+            {//產生新方塊組
+                _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
+                _nextBrickType = data.RandomType();
+            }
+            else
+            {//原方塊組下落
+                _currentBrick.Fall();
+            }
+            //視覺更新
             ValidCells();
         }
         /// <summary>
