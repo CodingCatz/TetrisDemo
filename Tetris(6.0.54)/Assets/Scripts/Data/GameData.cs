@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace Puzzle.Tetris
 {
@@ -52,6 +53,87 @@ namespace Puzzle.Tetris
         /// 棋盤高
         /// </summary>
         public int boardHeight;
+        /// <summary>
+        /// [字典]方塊形狀對應座標集合物件本體
+        /// </summary>
+        private static Dictionary<Type, Vector2Int[]> _cells;
+        /// <summary>
+        /// [字典]方塊形狀對外公開存取接口
+        /// </summary>
+        public static Dictionary<Type, Vector2Int[]> cells
+        {
+            get
+            {
+                if (_cells == null) 
+                {
+                    InitialCellData();
+                }
+                return _cells;
+            }
+        }
+        /// <summary>
+        /// 初始化方塊資料
+        /// </summary>
+        private static void InitialCellData()
+        {
+            _cells = new Dictionary<Type, Vector2Int[]>();
+            //I型：軸點為底下算來第二格
+            _cells.Add(Type.I, new Vector2Int[] 
+            {
+                new Vector2Int(0,2),
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(0,-1)
+            });
+            //O型：
+            _cells.Add(Type.O, new Vector2Int[]
+            {
+                new Vector2Int(1,1),
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(1,0)
+            });
+            //T型：
+            _cells.Add(Type.T, new Vector2Int[]
+            {
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(-1,0),
+                new Vector2Int(1,0)
+            });
+            //S型：
+            _cells.Add(Type.S, new Vector2Int[]
+            {
+                new Vector2Int(0,1),
+                new Vector2Int(1,1),
+                new Vector2Int(-1,0),
+                new Vector2Int(0,0)//軸點
+            });
+            //Z型：
+            _cells.Add(Type.Z, new Vector2Int[]
+            {
+                new Vector2Int(-1,1),
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(1,0)
+            });
+            //L型：
+            _cells.Add(Type.L, new Vector2Int[]
+            {
+                new Vector2Int(0,2),
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(1,0)
+            });
+            //J型：
+            _cells.Add(Type.J, new Vector2Int[]
+            {
+                new Vector2Int(0,2),
+                new Vector2Int(0,1),
+                new Vector2Int(0,0),//軸點
+                new Vector2Int(-1,0)
+            });
+        }
         #endregion 規格訊息
 
         #region 建構式
