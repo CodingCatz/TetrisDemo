@@ -105,7 +105,7 @@ namespace Puzzle.Tetris
         {
             _timeCounter++;//計算畫面更新
             //Debug.Log(_timeCounter);
-            if (_timeCounter >= COUNTER_TH)
+            if (_timeCounter >= GameSpeed)
             {
                 _timeCounter = 0;
                 Debug.Log("畫面刷新");
@@ -119,6 +119,10 @@ namespace Puzzle.Tetris
         /// 判定是否需要產生方塊組合
         /// </summary>
         private bool SpawnBrick => !_currentBrick.isAlive;
+        /// <summary>
+        /// 遊戲速率(共10級)
+        /// </summary>
+        private int GameSpeed => COUNTER_TH - speed * 5;
         #endregion 狀態數據
 
         #region 遊戲邏輯控制
@@ -134,6 +138,11 @@ namespace Puzzle.Tetris
         /// [常數]更新計數器閾值
         /// </summary>
         private const int COUNTER_TH = 50;
+        /// <summary>
+        /// [調速]速度等級(倍率：一個單位5)
+        /// </summary>
+        [Range(0,9)]
+        public int speed = 0;
         /// <summary>
         /// 更新計數器
         /// </summary>
