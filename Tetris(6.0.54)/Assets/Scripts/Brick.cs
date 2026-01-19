@@ -8,6 +8,27 @@ namespace Puzzle.Tetris
     /// </summary>
     public class Brick : MonoBehaviour
     {
+        #region 定義
+        /// <summary>
+        /// [定義]Brick的基本狀態
+        /// </summary>
+        public enum State
+        {
+            /// <summary>
+            /// 無磚塊
+            /// </summary>
+            None, 
+            /// <summary>
+            /// 有磚塊於此
+            /// </summary>
+            Exist, 
+            /// <summary>
+            /// 磚塊佔據
+            /// </summary>
+            Occupied
+        }
+        #endregion 定義
+
         #region 基礎元件
         private Image _image;
         private Image image
@@ -23,6 +44,10 @@ namespace Puzzle.Tetris
         }
         #endregion 基礎元件
 
+        /// <summary>
+        /// Brick狀態讀取
+        /// </summary>
+        public State state { get; private set; }
         public Color orgColor;
         public Color activeColor;
 
@@ -33,19 +58,48 @@ namespace Puzzle.Tetris
         public void Initial(string name)
         {
             this.name = name;
-            ClearColor();
+            UpdateColor();
         }
+
+        /// <summary>
+        /// 切換磚塊狀態
+        /// </summary>
+        /// <param name="state">要切換的狀態</param>
+        public void ChangeState(State state)
+        {
+            this.state = state;
+        }
+
+        /// <summary>
+        /// 刷新Brick的顏色
+        /// </summary>
+        public void UpdateColor()
+        {
+            switch (state)
+            {
+                default:
+                    ClearColor();
+                    break;
+                case State.Exist:
+                    ActiveColor();
+                    break;
+                case State.Occupied:
+                    ActiveColor();
+                    break;
+            }
+        }
+
         /// <summary>
         /// 預設顏色
         /// </summary>
-        public void ClearColor()
+        private void ClearColor()
         {
             image.color = orgColor;
         }
         /// <summary>
         /// 啟動顏色
         /// </summary>
-        public void ActiveColor()
+        private void ActiveColor()
         {
             image.color = activeColor;
         }

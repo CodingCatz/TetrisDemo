@@ -93,7 +93,7 @@ namespace Puzzle.Tetris
                     //為了辨識容易將每個Brick依座標命名
                     _gameBoard[x, y].Initial($"Brick({x},{y})");
                     //委託清除顏色功能到Action
-                    ClearAllBricks += _gameBoard[x, y].ClearColor;
+                    UpdateBricks += _gameBoard[x, y].UpdateColor;
                 }
             }
         }
@@ -156,9 +156,9 @@ namespace Puzzle.Tetris
         /// </summary>
         private BrickData _currentBrick;
         /// <summary>
-        /// 所有Brick的ClearColor功能集合
+        /// 所有Brick的UpdateColor功能集合
         /// </summary>
-        private Action ClearAllBricks;
+        private Action UpdateBricks;
 
         /// <summary>
         /// 方塊下墜
@@ -195,19 +195,29 @@ namespace Puzzle.Tetris
                     break;
                 }
             }
-            //阻止更新
-            if (!BrickAlive) return;
-            //統一清除所有方塊顏色
-            ClearAllBricks();
-            //FOREACH迴圈 (單一類型 in 該類型的集合)
+            //更新磚塊狀態
             foreach (Vector2Int cell in cells)
+            {
+                if (cell.y < data.boardHeight)
+                {
+                    //if (BrickAlive) _gameBoard[cell.x, cell.y].ChangeState(Brick.State.Exist);
+                    //else _gameBoard[cell.x, cell.y].ChangeState( Brick.State.Occupied);
+                    //三元運算：if => ?，else => :
+                    _gameBoard[cell.x, cell.y].ChangeState(BrickAlive ? Brick.State.Exist : Brick.State.Occupied);
+                }
+            }
+
+            //統一更新所有方塊顏色
+            UpdateBricks();
+            //FOREACH迴圈 (單一類型 in 該類型的集合)
+            /*foreach (Vector2Int cell in cells)
             {//計算對應錨點後所有Cell實際位置
                 
                 if (cell.y < data.boardHeight)
                 {//避免超出的座標被渲染
-                    _gameBoard[cell.x, cell.y].ActiveColor();
+                    _gameBoard[cell.x, cell.y].UpdateColor();
                 }
-            }
+            }*/
         }
         #endregion 遊戲邏輯控制
     }
