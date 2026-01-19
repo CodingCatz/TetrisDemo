@@ -181,6 +181,21 @@ namespace Puzzle.Tetris
             }
             return calCells;
         }
+        /// <summary>
+        /// [工具]計算方塊組對應偏移量的CellPos
+        /// </summary>
+        /// <param name="data">方塊組資料</param>
+        /// <param name="offset">偏移量</param>
+        /// <returns>Cells座標陣列</returns>
+        public static Vector2Int[] CalCells(BrickData data, Vector2Int offset)
+        {
+            Vector2Int[] calCells = new Vector2Int[4];
+            for (int i = 0; i < calCells.Length; i++)
+            {
+                calCells[i] = cells[data.type][i] + data.pos + offset;
+            }
+            return calCells;
+        }
         #endregion 規格訊息
 
         #region 建構式

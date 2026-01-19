@@ -133,7 +133,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// [常數]方塊出生座標Y
         /// </summary>
-        private const int SPAWN_Y = 19;
+        private const int SPAWN_Y = 20;
         /// <summary>
         /// [常數]更新計數器閾值
         /// </summary>
@@ -170,7 +170,7 @@ namespace Puzzle.Tetris
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
                 _nextBrickType = data.RandomType();
             }
-            else if (CheckCells(GameData.CalCells(_currentBrick)))
+            else if (CheckCells(GameData.CalCells(_currentBrick, Vector2Int.down)))
             {//原方塊組下落：先清除原本位置狀態
                 ClearCells(GameData.CalCells(_currentBrick));
                 _currentBrick.Fall();
@@ -186,14 +186,13 @@ namespace Puzzle.Tetris
         private bool CheckCells(Vector2Int[] cells)
         {
             bool pass = true;
-            //先檢查是否有需要更新視覺
+            //先檢查是否能更新視覺
             foreach (Vector2Int cell in cells)
             {
-                //1.左右超界檢查
-                //2.觸碰堆疊
-
-                //3.觸底檢查(預判)
-                if (cell.y - 1 < 0)
+                if (cell.y >= data.boardHeight) continue;
+                //0.左右超界檢查
+                //1.觸底檢查(預判) or 2.觸碰堆疊
+                if (cell.y < 0 || _gameBoard[cell.x, cell.y].state == Brick.State.Occupied)
                 {
                     _currentBrick.Lock();
                     pass = false;
