@@ -8,7 +8,10 @@ namespace Puzzle.Tetris
     /// </summary>
     public struct BrickData
     {
-        public bool isAlive;
+        /// <summary>
+        /// 方塊組是否處於可活動狀態
+        /// </summary>
+        public bool isAlive { get; private set; }
         /// <summary>
         /// 錨點X座標
         /// </summary>
@@ -50,6 +53,13 @@ namespace Puzzle.Tetris
             this.x = x;
             this.y = y;
             this.type = type;
+        }
+        /// <summary>
+        /// 產生碰撞鎖定
+        /// </summary>
+        public void Lock()
+        {
+            isAlive = false;
         }
 
         public void Fall()

@@ -116,9 +116,9 @@ namespace Puzzle.Tetris
 
         #region 狀態數據
         /// <summary>
-        /// 判定是否需要產生方塊組合
+        /// 當前操作中方塊組合是否存活
         /// </summary>
-        private bool SpawnBrick => !_currentBrick.isAlive;
+        private bool BrickAlive => _currentBrick.isAlive;
         /// <summary>
         /// 遊戲速率(共10級)
         /// </summary>
@@ -165,7 +165,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void DropBrick()
         {
-            if (SpawnBrick)
+            if (!BrickAlive)
             {//產生新方塊組
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
                 _nextBrickType = data.RandomType();
@@ -184,7 +184,6 @@ namespace Puzzle.Tetris
         {
             //取得相對應的方塊Cells座標
             Vector2Int[] cells = GameData.CalCells(_currentBrick);
-            bool valid = true;
             //先檢查是否有需要更新視覺
             foreach (Vector2Int cell in cells)
             {
@@ -192,12 +191,12 @@ namespace Puzzle.Tetris
                 //2.觸底檢查
                 if (cell.y < 0)
                 {
-                    valid = false;
+                    _currentBrick.Lock();
                     break;
                 }
             }
             //阻止更新
-            if (!valid) return;
+            if (!BrickAlive) return;
             //統一清除所有方塊顏色
             ClearAllBricks();
             //FOREACH迴圈 (單一類型 in 該類型的集合)
