@@ -48,8 +48,6 @@ namespace Puzzle.Tetris
         /// Brick狀態讀取
         /// </summary>
         public State state { get; private set; }
-        public Color orgColor;
-        public Color activeColor;
 
         /// <summary>
         /// 初始化
@@ -94,14 +92,14 @@ namespace Puzzle.Tetris
         /// </summary>
         private void ClearColor()
         {
-            image.color = orgColor;
+            image.color = GameData.orgColor;
         }
         /// <summary>
         /// 啟動顏色
         /// </summary>
         private void ActiveColor()
         {
-            image.color = activeColor;
+            image.color = GameData.activeColor;
         }
     }
 }
