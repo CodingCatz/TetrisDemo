@@ -148,6 +148,10 @@ namespace Puzzle.Tetris
             //下降(加速)
 
             //旋轉
+            if (Input.GetKeyDown(KeyCode.W))
+            {
+                TryRota();
+            }
         }
         #endregion 生命週期
 
@@ -186,6 +190,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private Action UpdateBricks;
 
+        private void TryRota()
+        {
+
+        }
         /// <summary>
         /// 嘗試移動方塊組合
         /// </summary>

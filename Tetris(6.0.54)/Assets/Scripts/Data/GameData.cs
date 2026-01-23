@@ -37,6 +37,14 @@ namespace Puzzle.Tetris
             }
         }
         /// <summary>
+        /// 當前操作中的對應座標組
+        /// </summary>
+        public Vector2Int[] cells;
+        /// <summary>
+        /// [暫存]重新計算的旋轉位置
+        /// </summary>
+        private Vector2Int newRota;
+        /// <summary>
         /// 形狀類型
         /// </summary>
         public GameData.Type type;
@@ -53,7 +61,7 @@ namespace Puzzle.Tetris
             this.x = x;
             this.y = y;
             this.type = type;
-            GameData.SetCurrentType(type);
+            this.cells = GameData.CloneCells(type);
         }
         /// <summary>
         /// 產生碰撞鎖定
@@ -77,6 +85,20 @@ namespace Puzzle.Tetris
         {
             this.x += offset.x;
             this.y += offset.y;
+        }
+        /// <summary>
+        /// 順時針旋轉90度
+        /// </summary>
+        public void Rota()
+        {
+            //正方形不旋轉
+            if (type == GameData.Type.O) return;
+            for (int i = 0; i < cells.Length; i++)
+            {//旋轉公式 (y,-x)
+                newRota.x = cells[i].y;
+                newRota.y = -cells[i].x;
+                cells[i] = newRota;//從暫存取代原本
+            }
         }
     }
 
@@ -109,6 +131,15 @@ namespace Puzzle.Tetris
         public static void SetCurrentType(Type type)
         {
             currentType = type;
+        }
+        /// <summary>
+        /// 複製預設方塊類型資料
+        /// </summary>
+        /// <param name="type">方塊類型</param>
+        /// <returns>方塊類型資料</returns>
+        public static Vector2Int[] CloneCells(Type type)
+        {
+            return cells[type].Clone() as Vector2Int[];
         }
         /// <summary>
         /// 預設顏色
