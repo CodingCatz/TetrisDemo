@@ -39,7 +39,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 當前操作中的對應座標組
         /// </summary>
-        public Vector2Int[] cells;
+        public Vector2Int[] cells { get; private set; }
         /// <summary>
         /// [暫存]重新計算的旋轉位置
         /// </summary>

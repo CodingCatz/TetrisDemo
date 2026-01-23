@@ -69,6 +69,10 @@ namespace Puzzle.Tetris
 
         #region 狀態數據
         /// <summary>
+        /// 操作中的方塊組座標
+        /// </summary>
+        private Vector2Int[] Cells => _currentBrick.cells;
+        /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
         private bool BrickAlive => _currentBrick.isAlive;
@@ -189,10 +193,15 @@ namespace Puzzle.Tetris
         /// 所有Brick的UpdateColor功能集合
         /// </summary>
         private Action UpdateBricks;
-
+        /// <summary>
+        /// 嘗試旋轉方塊組合
+        /// </summary>
         private void TryRota()
         {
-
+            ClearCells(_currentBrick.cells);
+            _currentBrick.Rota();
+            //視覺更新
+            ValidCells(_currentBrick.cells);
         }
         /// <summary>
         /// 嘗試移動方塊組合
