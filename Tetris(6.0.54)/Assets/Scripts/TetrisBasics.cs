@@ -200,7 +200,6 @@ namespace Puzzle.Tetris
                 ValidCells(GameData.CalCells(_currentBrick));
                 return true;
             }
-
             return false;
         }
         /// <summary>
@@ -217,8 +216,9 @@ namespace Puzzle.Tetris
             {//自然下墜
                 if (!TryMove(Vector2Int.down))
                 {//下墜移動失敗：產生撞擊
-
                     _currentBrick.Lock();
+                    //視覺更新
+                    ValidCells(GameData.CalCells(_currentBrick));
                     Debug.Log("下墜移動失敗：產生撞擊");
                     //消除檢查(一排橫連線)
                 }
