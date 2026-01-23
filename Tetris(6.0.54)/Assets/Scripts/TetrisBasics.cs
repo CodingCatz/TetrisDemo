@@ -63,8 +63,24 @@ namespace Puzzle.Tetris
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
         private Brick[,] _gameBoard;
-        
+
         #endregion 遊戲核心資料結構
+
+
+        #region 狀態數據
+        /// <summary>
+        /// 當前操作中方塊組合是否存活
+        /// </summary>
+        private bool BrickAlive => _currentBrick.isAlive;
+        /// <summary>
+        /// 遊戲速率(共10級)
+        /// </summary>
+        private int GameSpeed => COUNTER_TH - speed * 5;
+        /// <summary>
+        /// 遊戲是否結束
+        /// </summary>
+        private bool IsGameOver => _isGameOver;
+        #endregion 狀態數據
 
         #region 生命週期
         private void Start()
@@ -112,18 +128,27 @@ namespace Puzzle.Tetris
                 DropBrick();
             }
         }
-        #endregion 生命週期
 
-        #region 狀態數據
         /// <summary>
-        /// 當前操作中方塊組合是否存活
+        /// 執行玩家操作偵測
         /// </summary>
-        private bool BrickAlive => _currentBrick.isAlive;
-        /// <summary>
-        /// 遊戲速率(共10級)
-        /// </summary>
-        private int GameSpeed => COUNTER_TH - speed * 5;
-        #endregion 狀態數據
+        private void Update()
+        {
+            if (IsGameOver) return;
+            //左移
+            if (Input.GetKeyDown(KeyCode.A))
+            {
+                TryMove(Vector2Int.left);
+            }
+            //右移
+            if (Input.GetKeyDown(KeyCode.D))
+            {
+                TryMove(Vector2Int.right);
+            }
+            //下降(加速)
+            //旋轉
+        }
+        #endregion 生命週期
 
         #region 遊戲邏輯控制
         /// <summary>
@@ -159,6 +184,21 @@ namespace Puzzle.Tetris
         /// 所有Brick的UpdateColor功能集合
         /// </summary>
         private Action UpdateBricks;
+
+        /// <summary>
+        /// 嘗試移動方塊組合
+        /// </summary>
+        /// <param name="offset">操作的偏移量</param>
+        private void TryMove(Vector2Int offset)
+        {
+            if (CheckCells(GameData.CalCells(_currentBrick, offset)))
+            {//原方塊組移動：先清除原本位置狀態
+                ClearCells(GameData.CalCells(_currentBrick));
+                _currentBrick.Move(offset);
+                //視覺更新
+                ValidCells(GameData.CalCells(_currentBrick));
+            }
+        }
 
         /// <summary>
         /// 方塊下墜
