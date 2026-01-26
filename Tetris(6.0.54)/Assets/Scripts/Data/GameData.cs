@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.Analytics.IAnalytic;
 
 namespace Puzzle.Tetris
 {
@@ -8,10 +9,11 @@ namespace Puzzle.Tetris
     /// </summary>
     public struct BrickData
     {
+        #region 操作屬性
         /// <summary>
-        /// 方塊組是否處於可活動狀態
+        /// 形狀類型
         /// </summary>
-        public bool isAlive { get; private set; }
+        public GameData.Type type;
         /// <summary>
         /// 錨點X座標
         /// </summary>
@@ -29,11 +31,11 @@ namespace Puzzle.Tetris
         /// </summary>
         public Vector2Int pos
         {
-            get 
+            get
             {
                 _pos.x = x;
                 _pos.y = y;
-                return _pos; 
+                return _pos;
             }
         }
         /// <summary>
@@ -45,9 +47,11 @@ namespace Puzzle.Tetris
         /// </summary>
         private Vector2Int newRota;
         /// <summary>
-        /// 形狀類型
+        /// 方塊組是否處於可活動狀態
         /// </summary>
-        public GameData.Type type;
+        public bool isAlive { get; private set; }
+        #endregion 操作屬性
+
 
         /// <summary>
         /// 設定初始狀態
@@ -61,7 +65,7 @@ namespace Puzzle.Tetris
             this.x = x;
             this.y = y;
             this.type = type;
-            this.cells = GameData.CloneCells(type);
+            this.cells = GameData.CloneCells(type, pos);
         }
         /// <summary>
         /// 產生碰撞鎖定
@@ -76,6 +80,29 @@ namespace Puzzle.Tetris
         public void Fall()
         {
             this.y -= 1;
+        }
+        /// <summary>
+        /// 移動(撞擊)確認
+        /// </summary>
+        /// <param name="direction">方向</param>
+        /// <returns>是否</returns>
+        public bool CheckMove(Vector2Int direction)
+        {
+            foreach (Vector2Int cell in cells)
+            {
+                if (cell.y >= GameData.BoardHeight) continue;
+                //0.左右超界檢查
+                if (cell.x < 0 || cell.x >= GameData.BoardWidth)
+                {
+                    return false;
+                }
+                //1.觸底檢查(預判) or 2.觸碰堆疊
+                if (cell.y < 0 || GameData.Board[cell.x, cell.y].state == Brick.State.Occupied)
+                {
+                    return false;
+                }
+            }
+            return true;
         }
         /// <summary>
         /// 移動1個單位
@@ -113,14 +140,6 @@ namespace Puzzle.Tetris
             I, O, T, S, Z, L, J
         }
         /// <summary>
-        /// 棋盤寬
-        /// </summary>
-        public int boardWidth;
-        /// <summary>
-        /// 棋盤高
-        /// </summary>
-        public int boardHeight;
-        /// <summary>
         /// 當前正在操作的方塊組類型
         /// </summary>
         public static Type currentType { get; private set; }
@@ -136,10 +155,16 @@ namespace Puzzle.Tetris
         /// 複製預設方塊類型資料
         /// </summary>
         /// <param name="type">方塊類型</param>
+        /// <param name="pos">定位</param>
         /// <returns>方塊類型資料</returns>
-        public static Vector2Int[] CloneCells(Type type)
+        public static Vector2Int[] CloneCells(Type type, Vector2Int pos)
         {
-            return cells[type].Clone() as Vector2Int[];
+            Vector2Int[] calCells = cells[type].Clone() as Vector2Int[];
+            for (int i = 0; i < calCells.Length; i++)
+            {
+                calCells[i] += pos;
+            }
+            return calCells;
         }
         /// <summary>
         /// 預設顏色
@@ -180,7 +205,7 @@ namespace Puzzle.Tetris
         {
             get
             {
-                if (_cells == null) 
+                if (_cells == null)
                 {
                     InitialCellData();
                 }
@@ -194,7 +219,7 @@ namespace Puzzle.Tetris
         {
             _cells = new Dictionary<Type, Vector2Int[]>();
             //I型：軸點為底下算來第二格
-            _cells.Add(Type.I, new Vector2Int[] 
+            _cells.Add(Type.I, new Vector2Int[]
             {
                 new Vector2Int(0,2),
                 new Vector2Int(0,1),
@@ -281,14 +306,30 @@ namespace Puzzle.Tetris
         }
         #endregion 規格訊息
 
+        #region 公開資訊接口
+        /// <summary>
+        /// 棋盤寬
+        /// </summary>
+        public static int BoardWidth { get; private set; }
+        /// <summary>
+        /// 棋盤高
+        /// </summary>
+        public static int BoardHeight { get; private set; }
+        /// <summary>
+        /// 遊戲棋盤二維陣列(複數集合物件)
+        /// </summary>
+        public static Brick[,] Board { get; private set; }
+        #endregion 公開資訊接口
+
         #region 建構式
         /// <summary>
         /// 建構式(初始化class用)
         /// </summary>
-        public GameData() 
+        public GameData()
         {
-            boardWidth = 10;
-            boardHeight = 20;
+            BoardWidth = 10;
+            BoardHeight = 20;
+            Board = new Brick[BoardWidth, BoardHeight];
         }
 
         /// <summary>
@@ -298,10 +339,26 @@ namespace Puzzle.Tetris
         /// <param name="height">高</param>
         public GameData(int width, int height)
         {
-            boardWidth = width;
-            boardHeight = height;
+            BoardWidth = width;
+            BoardHeight = height;
+            Board = new Brick[BoardWidth, BoardHeight];
         }
         #endregion 建構式
+
+        #region 初始化遊戲資料
+        /// <summary>
+        /// 設定(建立)棋盤格上的磚
+        /// </summary>
+        /// <param name="x">座標X</param>
+        /// <param name="y">座標Y</param>
+        /// <param name="brick">磚塊實體</param>
+        public void SetBrick(int x, int y, Brick brick)
+        {
+            Board[x, y] = brick;
+            //為了辨識容易將每個Brick依座標命名
+            brick.Initial($"Brick({x},{y})");
+        }
+        #endregion 初始化遊戲資料
 
         /// <summary>
         /// 隨機取得一個方塊形狀
@@ -311,8 +368,33 @@ namespace Puzzle.Tetris
         {
             return (Type)Random.Range(0, 7);
         }
-    }
+        /// <summary>
+        /// 清除Brick的佔用狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        public void SetBrickStateToNone(Vector2Int pos)
+        {
+            Board[pos.x, pos.y].ChangeState(Brick.State.None);
+        }
 
+        /// <summary>
+        /// 設定Brick的暫存狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        public void SetBrickStateToExist(Vector2Int pos)
+        {
+            Board[pos.x, pos.y].ChangeState(Brick.State.Exist);
+        }
+
+        /// <summary>
+        /// 設定Brick的佔用狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        public void SetBrickStateToOccupied(Vector2Int pos)
+        {
+            Board[pos.x, pos.y].ChangeState(Brick.State.None);
+        }
+    }
 }
 
 namespace Puzzle.Match3

@@ -50,7 +50,7 @@ namespace Puzzle.Tetris
         private bool _isGameOver;
         #endregion 基礎資料
 
-        #region 遊戲核心資料結構
+        #region 遊戲核心介面
         /// <summary>
         /// 磚塊模板物件
         /// </summary>
@@ -59,15 +59,17 @@ namespace Puzzle.Tetris
         /// 棋盤載體UI
         /// </summary>
         public Transform boardUI;
-        /// <summary>
-        /// 遊戲棋盤二維陣列(複數集合物件)
-        /// </summary>
-        private Brick[,] _gameBoard;
-
-        #endregion 遊戲核心資料結構
-
+        #endregion 遊戲核心介面
 
         #region 狀態數據
+        /// <summary>
+        /// 棋盤寬
+        /// </summary>
+        private int Width => GameData.BoardWidth;
+        /// <summary>
+        /// 棋盤高
+        /// </summary>
+        private int Height => GameData.BoardHeight;
         /// <summary>
         /// 操作中的方塊組座標
         /// </summary>
@@ -101,19 +103,16 @@ namespace Puzzle.Tetris
             _nextBrickType = data.RandomType();
             _score = 0;
             _isGameOver = false;
-            _gameBoard = new Brick[data.boardWidth, data.boardHeight];
 
             //FOR迴圈：起始值;終點值;迭代值;
-            for (int y = 0; y < data.boardHeight; y++)
+            for (int y = 0; y < Height; y++)
             {//巢狀迴圈：10 * 20 次
-                for (int x = 0; x < data.boardWidth; x++)
+                for (int x = 0; x < Width; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
-                    _gameBoard[x, y] = Instantiate(brickTMP, boardUI);
-                    //為了辨識容易將每個Brick依座標命名
-                    _gameBoard[x, y].Initial($"Brick({x},{y})");
+                    data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
                     //委託清除顏色功能到Action
-                    UpdateBricks += _gameBoard[x, y].UpdateColor;
+                    //UpdateBricks += _gameBoard[x, y].UpdateColor;
                 }
             }
         }
@@ -198,10 +197,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private void TryRota()
         {
-            ClearCells(_currentBrick.cells);
+            ClearCells(Cells);
             _currentBrick.Rota();
             //視覺更新
-            ValidCells(_currentBrick.cells);
+            ValidCells(Cells);
         }
         /// <summary>
         /// 嘗試移動方塊組合
@@ -209,12 +208,12 @@ namespace Puzzle.Tetris
         /// <param name="offset">操作的偏移量</param>
         private bool TryMove(Vector2Int offset)
         {
-            if (CheckCells(GameData.CalCells(_currentBrick, offset)))
+            if (_currentBrick.CheckMove(offset))
             {//原方塊組移動：先清除原本位置狀態
-                ClearCells(GameData.CalCells(_currentBrick));
+                ClearCells(Cells);
                 _currentBrick.Move(offset);
                 //視覺更新
-                ValidCells(GameData.CalCells(_currentBrick));
+                ValidCells(Cells);
                 return true;
             }
             return false;
@@ -241,30 +240,7 @@ namespace Puzzle.Tetris
                 }
             }
         }
-        /// <summary>
-        /// 撞擊確認
-        /// </summary>
-        /// <param name="cells">方塊組座標陣列</param>
-        /// <returns>是否可以通過</returns>
-        private bool CheckCells(Vector2Int[] cells)
-        {
-            //先檢查是否能更新視覺
-            foreach (Vector2Int cell in cells)
-            {
-                if (cell.y >= data.boardHeight) continue;
-                //0.左右超界檢查
-                if (cell.x < 0 || cell.x >= data.boardWidth)
-                {
-                    return false;
-                }
-                //1.觸底檢查(預判) or 2.觸碰堆疊
-                if (cell.y < 0 || _gameBoard[cell.x, cell.y].state == Brick.State.Occupied)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
+
         /// <summary>
         /// 清除狀態
         /// </summary>
@@ -273,8 +249,8 @@ namespace Puzzle.Tetris
         {
             foreach (Vector2Int cell in cells)
             {//continue；略過超出範圍的cell
-                if (cell.y >= data.boardHeight) continue;
-                _gameBoard[cell.x, cell.y].ChangeState(Brick.State.None);
+                if (cell.y >= Height) continue;
+                data.SetBrickStateToNone(cell);
             }
         }
 
@@ -286,9 +262,15 @@ namespace Puzzle.Tetris
             //更新磚塊狀態
             foreach (Vector2Int cell in cells)
             {
-                if (cell.y >= data.boardHeight) continue;
-                //三元運算：if => ?，else => :
-                _gameBoard[cell.x, cell.y].ChangeState(BrickAlive ? Brick.State.Exist : Brick.State.Occupied);
+                if (cell.y >= Height) continue;
+                if (BrickAlive)
+                {
+                    data.SetBrickStateToExist(cell);
+                }
+                else
+                {
+                    data.SetBrickStateToOccupied(cell);
+                }
             }
             //統一更新所有方塊顏色
             UpdateBricks();
