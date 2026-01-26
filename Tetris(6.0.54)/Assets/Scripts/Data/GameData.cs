@@ -76,14 +76,8 @@ namespace Puzzle.Tetris
         {
             isAlive = false;
         }
-        /// <summary>
-        /// 下墜1個單位
-        /// </summary>
-        public void Fall()
-        {
-            this.y -= 1;
-        }
 
+        #region 移動旋轉相關功能
         /// <summary>
         /// 檢查方塊是否處於合法位置
         /// </summary>
@@ -103,38 +97,18 @@ namespace Puzzle.Tetris
             }
             return true;
         }
-
-        /// <summary>
-        /// 移動(撞擊)確認
-        /// </summary>
-        /// <param name="direction">方向</param>
-        /// <returns>是否</returns>
-        public bool CheckMove(Vector2Int direction)
-        {
-            foreach (Vector2Int cell in cells)
-            {
-                if (cell.y >= GameData.BoardHeight) continue;
-                //0.左右超界檢查
-                if (cell.x < 0 || cell.x >= GameData.BoardWidth)
-                {
-                    return false;
-                }
-                //1.觸底檢查(預判) or 2.觸碰堆疊
-                if (cell.y < 0 || GameData.Board[cell.x, cell.y].state == Brick.State.Occupied)
-                {
-                    return false;
-                }
-            }
-            return true;
-        }
         /// <summary>
         /// 移動1個單位
         /// </summary>
         /// <param name="offset">指定方向</param>
-        public void Move(Vector2Int offset)
+        public void Move(Vector2Int direction)
         {
-            this.x += offset.x;
-            this.y += offset.y;
+            x += direction.x;
+            y += direction.y;
+            for (int i = 0; i < cells.Length; i++)
+            {//移動
+                cells[i] += direction;
+            }
         }
         /// <summary>
         /// 順時針旋轉90度
@@ -150,6 +124,41 @@ namespace Puzzle.Tetris
                 cells[i] = newRota;//從暫存取代原本
             }
         }
+        #endregion 移動旋轉相關功能
+
+        #region 視覺更新相關功能
+        /// <summary>
+        /// 清除磚塊組合狀態
+        /// </summary>
+        /// <param name="cells">方塊組座標陣列</param>
+        public void ClearBrickState()
+        {
+            foreach (Vector2Int cell in cells)
+            {//continue；略過超出範圍的cell
+                if (cell.y >= H) continue;
+                GameData.SetBrickStateToNone(cell);
+            }
+        }
+        /// <summary>
+        /// 更新磚塊組合狀態
+        /// </summary>
+        /// <param name="cells">方塊組座標陣列</param>
+        public void UpdateBrickState()
+        {
+            foreach (Vector2Int cell in cells)
+            {//continue；略過超出範圍的cell
+                if (cell.y >= H) continue;
+                if (isAlive)
+                {
+                    GameData.SetBrickStateToExist(cell);
+                }
+                else
+                {
+                    GameData.SetBrickStateToOccupied(cell);
+                }
+            }
+        }
+        #endregion 視覺更新相關功能
     }
 
     public class GameData

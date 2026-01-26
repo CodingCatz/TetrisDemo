@@ -71,10 +71,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private int Height => GameData.BoardHeight;
         /// <summary>
-        /// 操作中的方塊組座標
-        /// </summary>
-        private Vector2Int[] Cells => _currentBrick.cells;
-        /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
         private bool BrickAlive => _currentBrick.isAlive;
@@ -111,8 +107,6 @@ namespace Puzzle.Tetris
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
-                    //委託清除顏色功能到Action
-                    //UpdateBricks += _gameBoard[x, y].UpdateColor;
                 }
             }
         }
@@ -188,36 +182,44 @@ namespace Puzzle.Tetris
         /// 當前操作中的方塊資料
         /// </summary>
         private BrickData _currentBrick;
-        /// <summary>
-        /// 所有Brick的UpdateColor功能集合
-        /// </summary>
-        private Action UpdateBricks;
+
         /// <summary>
         /// 嘗試旋轉方塊組合
         /// </summary>
         private void TryRota()
         {
-            ClearCells(Cells);
-            _currentBrick.Rota();
-            //視覺更新
-            ValidCells(Cells);
+            BrickData tmp = _currentBrick;//影Brick
+            //模擬位移
+            tmp.Rota();
+            //不穿牆不卡磚
+            if (tmp.IsValid())
+            {
+                _currentBrick.ClearBrickState();
+                _currentBrick = tmp;//套用影Brick
+                _currentBrick.UpdateBrickState();
+            }
         }
+
         /// <summary>
         /// 嘗試移動方塊組合
         /// </summary>
         /// <param name="offset">操作的偏移量</param>
         private bool TryMove(Vector2Int offset)
         {
-            if (_currentBrick.CheckMove(offset))
-            {//原方塊組移動：先清除原本位置狀態
-                ClearCells(Cells);
-                _currentBrick.Move(offset);
-                //視覺更新
-                ValidCells(Cells);
+            BrickData tmp = _currentBrick;//影Brick
+            //模擬位移
+            tmp.Move(offset);
+            //不穿牆不卡磚
+            if (tmp.IsValid())
+            {
+                _currentBrick.ClearBrickState();
+                _currentBrick = tmp;//套用影Brick
+                _currentBrick.UpdateBrickState();
                 return true;
             }
             return false;
         }
+
         /// <summary>
         /// 方塊下墜
         /// </summary>
@@ -233,47 +235,8 @@ namespace Puzzle.Tetris
                 if (!TryMove(Vector2Int.down))
                 {//下墜移動失敗：產生撞擊
                     _currentBrick.Lock();
-                    //視覺更新
-                    ValidCells(GameData.CalCells(_currentBrick));
-                    Debug.Log("下墜移動失敗：產生撞擊");
-                    //消除檢查(一排橫連線)
                 }
             }
-        }
-
-        /// <summary>
-        /// 清除狀態
-        /// </summary>
-        /// <param name="cells">方塊組座標陣列</param>
-        private void ClearCells(Vector2Int[] cells)
-        {
-            foreach (Vector2Int cell in cells)
-            {//continue；略過超出範圍的cell
-                if (cell.y >= Height) continue;
-                GameData.SetBrickStateToNone(cell);
-            }
-        }
-
-        /// <summary>
-        /// 可視化棋盤Cells
-        /// </summary>
-        private void ValidCells(Vector2Int[] cells)
-        {
-            //更新磚塊狀態
-            foreach (Vector2Int cell in cells)
-            {
-                if (cell.y >= Height) continue;
-                if (BrickAlive)
-                {
-                    GameData.SetBrickStateToExist(cell);
-                }
-                else
-                {
-                    GameData.SetBrickStateToOccupied(cell);
-                }
-            }
-            //統一更新所有方塊顏色
-            UpdateBricks();
         }
         #endregion 遊戲邏輯控制
     }

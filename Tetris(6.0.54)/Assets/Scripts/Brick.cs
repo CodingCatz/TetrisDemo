@@ -66,6 +66,7 @@ namespace Puzzle.Tetris
         public void ChangeState(State state)
         {
             this.state = state;
+            UpdateColor();//更新磚塊視覺
         }
 
         /// <summary>
