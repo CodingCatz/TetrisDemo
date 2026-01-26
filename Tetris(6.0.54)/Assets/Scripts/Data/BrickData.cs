@@ -66,6 +66,7 @@ namespace Puzzle.Tetris
             this.x = x;
             this.y = y;
             this.type = type;
+            GameData.SetCurrentType(type);
             this.cells = GameData.CloneCells(type, pos);
         }
         #endregion 初始化
