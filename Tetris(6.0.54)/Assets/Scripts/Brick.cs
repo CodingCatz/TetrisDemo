@@ -83,7 +83,7 @@ namespace Puzzle.Tetris
                     ActiveColor();
                     break;
                 case State.Occupied:
-                    //ActiveColor();
+                    ActiveColor();
                     break;
             }
         }
