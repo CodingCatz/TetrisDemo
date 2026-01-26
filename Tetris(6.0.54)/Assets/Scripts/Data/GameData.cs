@@ -52,6 +52,8 @@ namespace Puzzle.Tetris
         public bool isAlive { get; private set; }
         #endregion 操作屬性
 
+        private int W => GameData.BoardWidth;
+        private int H => GameData.BoardHeight;
 
         /// <summary>
         /// 設定初始狀態
@@ -81,6 +83,27 @@ namespace Puzzle.Tetris
         {
             this.y -= 1;
         }
+
+        /// <summary>
+        /// 檢查方塊是否處於合法位置
+        /// </summary>
+        /// <returns>是否處於合法位置</returns>
+        public bool IsValid()
+        {
+            foreach (var cell in cells)
+            {
+                //出界(左、下、右邊)超出
+                if (cell.x < 0 || cell.y < 0 || cell.x >= W)
+                    return false;
+                //重疊(上邊以內)
+                if (cell.y < H)
+                {
+                    if(GameData.GetBrickState(cell) == Brick.State.Occupied) return false;
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// 移動(撞擊)確認
         /// </summary>
@@ -368,11 +391,22 @@ namespace Puzzle.Tetris
         {
             return (Type)Random.Range(0, 7);
         }
+
+        /// <summary>
+        /// 取得特定位置磚塊的狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        /// <returns>磚塊的狀態</returns>
+        public static Brick.State GetBrickState(Vector2Int pos)
+        {
+            return Board[pos.x, pos.y].state;
+        }
+
         /// <summary>
         /// 清除Brick的佔用狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public void SetBrickStateToNone(Vector2Int pos)
+        public static void SetBrickStateToNone(Vector2Int pos)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.None);
         }
@@ -381,7 +415,7 @@ namespace Puzzle.Tetris
         /// 設定Brick的暫存狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public void SetBrickStateToExist(Vector2Int pos)
+        public static void SetBrickStateToExist(Vector2Int pos)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Exist);
         }
@@ -390,7 +424,7 @@ namespace Puzzle.Tetris
         /// 設定Brick的佔用狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public void SetBrickStateToOccupied(Vector2Int pos)
+        public static void SetBrickStateToOccupied(Vector2Int pos)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.None);
         }

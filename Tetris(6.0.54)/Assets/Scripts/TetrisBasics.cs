@@ -250,7 +250,7 @@ namespace Puzzle.Tetris
             foreach (Vector2Int cell in cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= Height) continue;
-                data.SetBrickStateToNone(cell);
+                GameData.SetBrickStateToNone(cell);
             }
         }
 
@@ -265,11 +265,11 @@ namespace Puzzle.Tetris
                 if (cell.y >= Height) continue;
                 if (BrickAlive)
                 {
-                    data.SetBrickStateToExist(cell);
+                    GameData.SetBrickStateToExist(cell);
                 }
                 else
                 {
-                    data.SetBrickStateToOccupied(cell);
+                    GameData.SetBrickStateToOccupied(cell);
                 }
             }
             //統一更新所有方塊顏色
