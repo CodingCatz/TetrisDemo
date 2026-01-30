@@ -56,51 +56,18 @@ namespace Puzzle.Tetris
         public void Initial(string name)
         {
             this.name = name;
-            UpdateColor();
+            ChangeState(State.None, GameData.ActiveColor());
         }
 
         /// <summary>
         /// 切換磚塊狀態
         /// </summary>
         /// <param name="state">要切換的狀態</param>
-        public void ChangeState(State state)
+        public void ChangeState(State state, Color color)
         {
             this.state = state;
-            UpdateColor();//更新磚塊視覺
-        }
-
-        /// <summary>
-        /// 刷新Brick的顏色
-        /// </summary>
-        public void UpdateColor()
-        {
-            switch (state)
-            {
-                default:
-                    ClearColor();
-                    break;
-                case State.Exist:
-                    ActiveColor();
-                    break;
-                case State.Occupied:
-                    ActiveColor();
-                    break;
-            }
-        }
-
-        /// <summary>
-        /// 預設顏色
-        /// </summary>
-        private void ClearColor()
-        {
-            image.color = GameData.orgColor;
-        }
-        /// <summary>
-        /// 啟動顏色
-        /// </summary>
-        private void ActiveColor()
-        {
-            image.color = GameData.activeColor;
+            //更新磚塊視覺
+            image.color = color;
         }
     }
 }

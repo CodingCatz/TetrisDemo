@@ -173,11 +173,11 @@ namespace Puzzle.Tetris
                 if (cell.y >= H) continue;
                 if (isAlive)
                 {
-                    GameData.SetBrickStateToExist(cell);
+                    GameData.SetBrickStateToExist(cell, type);
                 }
                 else
                 {
-                    GameData.SetBrickStateToOccupied(cell);
+                    GameData.SetBrickStateToOccupied(cell, type);
                 }
             }
         }

@@ -11,31 +11,13 @@ namespace Puzzle.Tetris
         /// </summary>
         public enum Type
         {
-            I, O, T, S, Z, L, J
+            I, O, T, S, Z, L, J, None
         }
-        /// <summary>
-        /// 當前正在操作的方塊組類型
-        /// </summary>
-        public static Type currentType { get; private set; }
-        /// <summary>
-        /// 預設顏色
-        /// </summary>
-        public static Color orgColor = Color.gray;
-        /// <summary>
-        /// 使用中的方塊顏色
-        /// </summary>
-        public static Color activeColor
-        {
-            get
-            {
-                return ActiveColor(currentType);
-            }
-        }
-        public static Color ActiveColor(Type type)
+        public static Color ActiveColor(Type type = Type.None)
         {
             switch (type)
             {
-                default: return orgColor;
+                default: return Color.gray;
                 case Type.I: return Color.cyan;
                 case Type.O: return Color.blue;
                 case Type.T: return Color.blue + Color.red;
@@ -241,25 +223,25 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public static void SetBrickStateToNone(Vector2Int pos)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.None);
+            Board[pos.x, pos.y].ChangeState(Brick.State.None, ActiveColor());
         }
 
         /// <summary>
         /// 設定Brick的暫存狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetBrickStateToExist(Vector2Int pos)
+        public static void SetBrickStateToExist(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Exist);
+            Board[pos.x, pos.y].ChangeState(Brick.State.Exist, ActiveColor(type));
         }
 
         /// <summary>
         /// 設定Brick的佔用狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetBrickStateToOccupied(Vector2Int pos)
+        public static void SetBrickStateToOccupied(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.None);
+            Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, ActiveColor(type));
         }
         #endregion Brick狀態操作相關
     }
