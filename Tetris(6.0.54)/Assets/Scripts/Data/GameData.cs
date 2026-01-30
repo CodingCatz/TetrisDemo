@@ -26,21 +26,6 @@ namespace Puzzle.Tetris
             currentType = type;
         }
         /// <summary>
-        /// 複製預設方塊類型資料
-        /// </summary>
-        /// <param name="type">方塊類型</param>
-        /// <param name="pos">定位</param>
-        /// <returns>方塊類型資料</returns>
-        public static Vector2Int[] CloneCells(Type type, Vector2Int pos)
-        {
-            Vector2Int[] calCells = cells[type].Clone() as Vector2Int[];
-            for (int i = 0; i < calCells.Length; i++)
-            {
-                calCells[i] += pos;
-            }
-            return calCells;
-        }
-        /// <summary>
         /// 預設顏色
         /// </summary>
         public static Color orgColor = Color.gray;
@@ -71,19 +56,19 @@ namespace Puzzle.Tetris
         /// <summary>
         /// [字典]方塊形狀對應座標集合物件本體
         /// </summary>
-        private static Dictionary<Type, Vector2Int[]> _cells;
+        private static Dictionary<Type, List<Vector2Int[]>> _rotaTmp;
         /// <summary>
         /// [字典]方塊形狀對外公開存取接口
         /// </summary>
-        public static Dictionary<Type, Vector2Int[]> cells
+        public static Dictionary<Type, List<Vector2Int[]>> rotaTmp
         {
             get
             {
-                if (_cells == null)
+                if (_rotaTmp == null)
                 {
                     InitialCellData();
                 }
-                return _cells;
+                return _rotaTmp;
             }
         }
         /// <summary>
@@ -91,92 +76,96 @@ namespace Puzzle.Tetris
         /// </summary>
         private static void InitialCellData()
         {
-            _cells = new Dictionary<Type, Vector2Int[]>();
-            //I型：軸點為底下算來第二格
-            _cells.Add(Type.I, new Vector2Int[]
+            _rotaTmp = new Dictionary<Type, List<Vector2Int[]>>();
+            //定義初始形狀(無旋轉)
+            Dictionary<Type, Vector2Int[]> baseRota = new Dictionary<Type, Vector2Int[]>()
             {
-                new Vector2Int(0,2),
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(0,-1)
-            });
-            //O型：
-            _cells.Add(Type.O, new Vector2Int[]
+                {//I型：軸點為底下算來第二格
+                    Type.I, new Vector2Int[]
+                    {
+                        new Vector2Int(0,2),
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(0,-1)
+                    }
+                },
+                {//O型：不轉動
+                    Type.O, new Vector2Int[]
+                    {
+                        new Vector2Int(1,1),
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(1,0)
+                    }
+                },
+                {//T型：
+                    Type.T, new Vector2Int[]
+                    {
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(-1,0),
+                        new Vector2Int(1,0)
+                    }
+                },
+                {//S型：
+                    Type.S, new Vector2Int[]
+                    {
+                        new Vector2Int(0,1),
+                        new Vector2Int(1,1),
+                        new Vector2Int(-1,0),
+                        new Vector2Int(0,0)//軸點
+                    }
+                },
+                {//Z型：
+                    Type.Z, new Vector2Int[]
+                    {
+                        new Vector2Int(-1,1),
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(1,0)
+                    }
+                },
+                {//L型：
+                    Type.L, new Vector2Int[]
+                    {
+                        new Vector2Int(0,2),
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(1,0)
+                    }
+                },
+                {//J型：
+                    Type.J, new Vector2Int[]
+                    {
+                        new Vector2Int(0,2),
+                        new Vector2Int(0,1),
+                        new Vector2Int(0,0),//軸點
+                        new Vector2Int(-1,0)
+                    }
+                }
+            };
+            //為每個形狀產生一組四個轉向的模板
+            foreach (var tmp in baseRota)
             {
-                new Vector2Int(1,1),
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(1,0)
-            });
-            //T型：
-            _cells.Add(Type.T, new Vector2Int[]
-            {
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(-1,0),
-                new Vector2Int(1,0)
-            });
-            //S型：
-            _cells.Add(Type.S, new Vector2Int[]
-            {
-                new Vector2Int(0,1),
-                new Vector2Int(1,1),
-                new Vector2Int(-1,0),
-                new Vector2Int(0,0)//軸點
-            });
-            //Z型：
-            _cells.Add(Type.Z, new Vector2Int[]
-            {
-                new Vector2Int(-1,1),
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(1,0)
-            });
-            //L型：
-            _cells.Add(Type.L, new Vector2Int[]
-            {
-                new Vector2Int(0,2),
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(1,0)
-            });
-            //J型：
-            _cells.Add(Type.J, new Vector2Int[]
-            {
-                new Vector2Int(0,2),
-                new Vector2Int(0,1),
-                new Vector2Int(0,0),//軸點
-                new Vector2Int(-1,0)
-            });
-        }
-        /// <summary>
-        /// [工具]計算方塊組對應CellPos
-        /// </summary>
-        /// <param name="data">方塊組資料</param>
-        /// <returns>Cells座標陣列</returns>
-        public static Vector2Int[] CalCells(BrickData data)
-        {
-            Vector2Int[] calCells = new Vector2Int[4];
-            for (int i = 0; i < calCells.Length; i++)
-            {
-                calCells[i] = cells[data.type][i] + data.pos;
+                Type type = tmp.Key;//字典鍵值
+                Vector2Int[] orgRota = tmp.Value;//字典資料
+                //計算後的結果(4種轉向)
+                List<Vector2Int[]> list = new List<Vector2Int[]>();
+                //運算邏輯
+                list.Add(orgRota);//原始數據
+                for (int r = 1; r < 4; r++)
+                {
+                    Vector2Int[] nextRota = new Vector2Int[orgRota.Length];
+                    for (int i = 0; i < orgRota.Length; i++)
+                    {//旋轉公式 (y,-x)
+                        nextRota[i].x = orgRota[i].y;
+                        nextRota[i].y = -orgRota[i].x;
+                    }
+                    list.Add(nextRota);//加入清單內
+                    orgRota = nextRota;//下一次轉動初始替換
+                }
+                _rotaTmp.Add(type, list);
             }
-            return calCells;
-        }
-        /// <summary>
-        /// [工具]計算方塊組對應偏移量的CellPos
-        /// </summary>
-        /// <param name="data">方塊組資料</param>
-        /// <param name="offset">偏移量</param>
-        /// <returns>Cells座標陣列</returns>
-        public static Vector2Int[] CalCells(BrickData data, Vector2Int offset)
-        {
-            Vector2Int[] calCells = new Vector2Int[4];
-            for (int i = 0; i < calCells.Length; i++)
-            {
-                calCells[i] = cells[data.type][i] + data.pos + offset;
-            }
-            return calCells;
         }
         #endregion 規格訊息
 
