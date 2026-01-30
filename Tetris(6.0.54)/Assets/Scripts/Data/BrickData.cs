@@ -37,13 +37,40 @@ namespace Puzzle.Tetris
             }
         }
         /// <summary>
+        /// 轉向方位的索引號碼
+        /// </summary>
+        private int _rotaIndex;
+        /// <summary>
+        /// 轉向方位的索引運算
+        /// </summary>
+        public int rotaIndex
+        {
+            get
+            {
+                return _rotaIndex;
+            }
+            set
+            {//旋轉循環公式處裡掉 0~3 
+                if (value > 3) _rotaIndex = 0;
+                else _rotaIndex = value;
+            }
+        }
+        /// <summary>
         /// 當前操作中的對應座標組
         /// </summary>
-        public Vector2Int[] cells { get; private set; }
-        /// <summary>
-        /// [暫存]重新計算的旋轉位置
-        /// </summary>
-        private Vector2Int newRota;
+        public Vector2Int[] Cells => CalRota();
+
+        private Vector2Int[] CalRota()
+        {
+            //讀取模板
+            Vector2Int[] tmp = GameData.rotaTmp[type][rotaIndex];
+            Vector2Int[] result = new Vector2Int[tmp.Length];
+            for (int i = 0; i < tmp.Length; i++)
+            {
+                result[i] = pos + tmp[i];
+            }
+            return result;
+        }
         /// <summary>
         /// 方塊組是否處於可活動狀態
         /// </summary>
@@ -66,8 +93,7 @@ namespace Puzzle.Tetris
             this.x = x;
             this.y = y;
             this.type = type;
-            GameData.SetCurrentType(type);
-            this.cells = GameData.CloneCells(type, pos);
+            rotaIndex = 0;//初始化旋轉
         }
         #endregion 初始化
 
@@ -86,7 +112,7 @@ namespace Puzzle.Tetris
         /// <returns>是否處於合法位置</returns>
         public bool IsValid()
         {
-            foreach (var cell in cells)
+            foreach (var cell in Cells)
             {
                 //出界(左、下、右邊)超出
                 if (cell.x < 0 || cell.y < 0 || cell.x >= W)
@@ -108,10 +134,6 @@ namespace Puzzle.Tetris
         {
             x += direction.x;
             y += direction.y;
-            for (int i = 0; i < cells.Length; i++)
-            {//移動
-                cells[i] += direction;
-            }
         }
 
         /// <summary>
@@ -121,12 +143,8 @@ namespace Puzzle.Tetris
         {
             //正方形不旋轉
             if (type == GameData.Type.O) return;
-            for (int i = 0; i < cells.Length; i++)
-            {//旋轉公式 (y,-x)
-                newRota.x = cells[i].y;
-                newRota.y = -cells[i].x;
-                cells[i] = newRota;//從暫存取代原本
-            }
+            //旋轉索引+1
+            rotaIndex++;
         }
         #endregion 移動旋轉相關功能
 
@@ -137,7 +155,7 @@ namespace Puzzle.Tetris
         /// <param name="cells">方塊組座標陣列</param>
         public void ClearBrickState()
         {
-            foreach (Vector2Int cell in cells)
+            foreach (Vector2Int cell in Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
                 GameData.SetBrickStateToNone(cell);
@@ -150,7 +168,7 @@ namespace Puzzle.Tetris
         /// <param name="cells">方塊組座標陣列</param>
         public void UpdateBrickState()
         {
-            foreach (Vector2Int cell in cells)
+            foreach (Vector2Int cell in Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
                 if (isAlive)

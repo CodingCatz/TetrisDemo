@@ -18,14 +18,6 @@ namespace Puzzle.Tetris
         /// </summary>
         public static Type currentType { get; private set; }
         /// <summary>
-        /// 設定當前操作方塊類型
-        /// </summary>
-        /// <param name="type">方塊類型</param>
-        public static void SetCurrentType(Type type)
-        {
-            currentType = type;
-        }
-        /// <summary>
         /// 預設顏色
         /// </summary>
         public static Color orgColor = Color.gray;
