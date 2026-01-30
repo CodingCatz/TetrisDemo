@@ -243,6 +243,10 @@ namespace Puzzle.Tetris
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, ActiveColor(type));
         }
+        public static void SetBrickStateToDead(Vector2Int pos, Color color)
+        {
+            Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, color);
+        }
         #endregion Brick狀態操作相關
     }
 }

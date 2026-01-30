@@ -59,6 +59,10 @@ namespace Puzzle.Tetris
         /// 棋盤載體UI
         /// </summary>
         public Transform boardUI;
+        /// <summary>
+        /// 磚塊陣亡
+        /// </summary>
+        public Color brickDead;
         #endregion 遊戲核心介面
 
         #region 狀態數據
@@ -83,6 +87,11 @@ namespace Puzzle.Tetris
         /// </summary>
         private bool IsGameOver => _isGameOver;
         #endregion 狀態數據
+
+        /// <summary>
+        /// 掃描線座標
+        /// </summary>
+        Vector2Int scanPos;
 
         #region 生命週期
         private void Start()
@@ -110,6 +119,23 @@ namespace Puzzle.Tetris
                 }
             }
         }
+        /// <summary>
+        /// 執行滅頂動態
+        /// </summary>
+        private void DieOut()
+        {
+            if (_timeCounter < 5) return;
+            _timeCounter = 0;//計時重置
+            if (scanPos.y < Height)
+            {//掃描線從最底往上淹沒
+                for (int x = 0; x < Width; x++)
+                {//Y相同的一橫排變死色
+                    scanPos.x = x;
+                    GameData.SetBrickStateToDead(scanPos, brickDead);
+                }
+                scanPos.y++;//跳至下一排
+            }
+        }
 
         /// <summary>
         /// 以每秒跳動50次的固定更新週期刷新畫面
@@ -117,11 +143,12 @@ namespace Puzzle.Tetris
         private void FixedUpdate()
         {
             _timeCounter++;//計算畫面更新
-            //Debug.Log(_timeCounter);
-            if (_timeCounter >= GameSpeed)
+            if (IsGameOver)
             {
-                _timeCounter = 0;
-                Debug.Log("畫面刷新");
+                DieOut();
+            }
+            else 
+            {
                 DropBrick();
             }
         }
@@ -225,20 +252,26 @@ namespace Puzzle.Tetris
         /// </summary>
         private void DropBrick()
         {
+            if (_timeCounter < GameSpeed) return;
+            _timeCounter = 0;//計時重置
             if (!BrickAlive)
             {//產生新方塊組
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
                 _nextBrickType = data.RandomType();
                 //滅頂邏輯
+                if (!_currentBrick.IsValid())
+                {
+                    _isGameOver = true;
+                }
             }
             else
             {//自然下墜
                 if (!TryMove(Vector2Int.down))
                 {//下墜移動失敗：產生撞擊
                     _currentBrick.Lock();
-                    _currentBrick.UpdateBrickState();
                 }
             }
+            _currentBrick.UpdateBrickState();
         }
         #endregion 遊戲邏輯控制
     }
