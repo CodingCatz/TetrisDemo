@@ -229,12 +229,14 @@ namespace Puzzle.Tetris
             {//產生新方塊組
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
                 _nextBrickType = data.RandomType();
+                //滅頂邏輯
             }
             else
             {//自然下墜
                 if (!TryMove(Vector2Int.down))
                 {//下墜移動失敗：產生撞擊
                     _currentBrick.Lock();
+                    _currentBrick.UpdateBrickState();
                 }
             }
         }
