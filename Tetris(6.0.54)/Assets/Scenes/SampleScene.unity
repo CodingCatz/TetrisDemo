@@ -396,6 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 1177812928}
+  brickDead: {r: 0.4811321, g: 0.35656798, b: 0.22014064, a: 1}
   speed: 9
 --- !u!1 &1177812927
 GameObject:
