@@ -44,12 +44,18 @@ namespace Puzzle.Tetris
         /// [操作]首次按住移動觸發的時間延遲(SWitchDelay)
         /// </summary>
         private const float MOVE_SWD = 0.2f;
-        private float timerMoveSWD;
         /// <summary>
         /// [操作]按住移動後持續觸發的時間間隔(CoolDown)
         /// </summary>
         private const float MOVE_CD = 0.05f;
-        private float timerMoveCD;
+        /// <summary>
+        /// 移動冷卻計時
+        /// </summary>
+        private float moveTimer;
+        /// <summary>
+        /// 移動觸發次數
+        /// </summary>
+        private int moveCount;
         /// <summary>
         /// 遊戲進行成績
         /// </summary>
@@ -103,7 +109,15 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 左右(A/D)操作數值
         /// </summary>
-        private float MoveDir => Input.GetAxis("Horizontal");
+        private int MoveDir => Math.Sign(Input.GetAxis("Horizontal"));
+        /// <summary>
+        /// 第一次按下移動操作
+        /// </summary>
+        private bool FirstMove => moveCount < 0;
+        /// <summary>
+        /// 移動是否可以被觸發
+        /// </summary>
+        private bool MoveTrigger => moveTimer >= MOVE_SWD + (FirstMove ? 0 : moveCount * MOVE_CD);
         /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
@@ -178,23 +192,21 @@ namespace Puzzle.Tetris
         private void MoveInput()
         {
             if (MoveDir != 0)
-            {
-                timerMoveSWD += Time.deltaTime;
-                if (timerMoveSWD >= MOVE_SWD)
-                {
-                    if (timerMoveCD >= MOVE_CD)
-                    {
-                        if (MoveDir > 0) TryMove(Vector2Int.right);
-                        if (MoveDir < 0) TryMove(Vector2Int.left);
-                        timerMoveCD = 0;//重置連續移動CD
+            {//按下移動：A/D
+                if (MoveTrigger)
+                {//觸發移動
+                    if (TryMove(Vector2Int.right * MoveDir))
+                    {//檢查是否為按下A/D後第一次移動
+                        if (FirstMove) moveTimer = 0;//贈送第一次移動
+                        moveCount++;//正式計算連續移動次數
                     }
-                    timerMoveCD += Time.deltaTime;//累計連續移動CD
                 }
+                moveTimer += Time.deltaTime;
             }
             else
-            {
-                timerMoveSWD = 0;
-                timerMoveCD = MOVE_CD;//立刻冷卻連續移動CD
+            {//放開A/D
+                moveTimer = MOVE_SWD;//立刻冷卻連續移動延遲
+                moveCount = -1;//立刻重置連續移動次數(避免每次冷卻重置)
             }
         }
 
