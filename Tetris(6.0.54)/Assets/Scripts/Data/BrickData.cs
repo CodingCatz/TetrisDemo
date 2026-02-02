@@ -161,7 +161,6 @@ namespace Puzzle.Tetris
                 GameData.SetBrickStateToNone(cell);
             }
         }
-
         /// <summary>
         /// 更新磚塊組合狀態
         /// </summary>
@@ -184,6 +183,9 @@ namespace Puzzle.Tetris
         #endregion 遊戲區視覺更新相關功能
 
         #region 預覽區視覺更新相關功能
+        /// <summary>
+        /// 清除下個磚塊預覽
+        /// </summary>
         public void ClearNextBrick()
         {
             foreach (Vector2Int cell in Cells)
@@ -191,6 +193,9 @@ namespace Puzzle.Tetris
                 GameData.SetNextUIToNone(cell);
             }
         }
+        /// <summary>
+        /// 更新下個磚塊預覽
+        /// </summary>
         public void UpdateNextBrick()
         {
             foreach (Vector2Int cell in Cells)

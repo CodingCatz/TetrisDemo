@@ -41,6 +41,16 @@ namespace Puzzle.Tetris
             }
         }
         /// <summary>
+        /// [操作]首次按住移動觸發的時間延遲(SWitchDelay)
+        /// </summary>
+        private const float MOVE_SWD = 0.2f;
+        private float timerMoveSWD;
+        /// <summary>
+        /// [操作]按住移動後持續觸發的時間間隔(CoolDown)
+        /// </summary>
+        private const float MOVE_CD = 0.05f;
+        private float timerMoveCD;
+        /// <summary>
         /// 遊戲進行成績
         /// </summary>
         private int _score;
@@ -90,6 +100,10 @@ namespace Puzzle.Tetris
         /// 預覽區高
         /// </summary>
         private int NextHeight => GameData.NextHeight;
+        /// <summary>
+        /// 左右(A/D)操作數值
+        /// </summary>
+        private float MoveDir => Input.GetAxis("Horizontal");
         /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
@@ -157,6 +171,33 @@ namespace Puzzle.Tetris
 
             _isReady = true;
         }
+
+        /// <summary>
+        /// 移動輸入
+        /// </summary>
+        private void MoveInput()
+        {
+            if (MoveDir != 0)
+            {
+                timerMoveSWD += Time.deltaTime;
+                if (timerMoveSWD >= MOVE_SWD)
+                {
+                    if (timerMoveCD >= MOVE_CD)
+                    {
+                        if (MoveDir > 0) TryMove(Vector2Int.right);
+                        if (MoveDir < 0) TryMove(Vector2Int.left);
+                        timerMoveCD = 0;//重置連續移動CD
+                    }
+                    timerMoveCD += Time.deltaTime;//累計連續移動CD
+                }
+            }
+            else
+            {
+                timerMoveSWD = 0;
+                timerMoveCD = MOVE_CD;//立刻冷卻連續移動CD
+            }
+        }
+
         /// <summary>
         /// 執行滅頂動態
         /// </summary>
@@ -197,18 +238,14 @@ namespace Puzzle.Tetris
         private void Update()
         {
             if (IsGameOver) return;
-            //左移
-            if (Input.GetKey(KeyCode.A))
-            {
-                TryMove(Vector2Int.left);
-            }
-            //右移
-            if (Input.GetKey(KeyCode.D))
-            {
-                TryMove(Vector2Int.right);
-            }
-            //下降(加速)
 
+            MoveInput();
+
+            //下降(加速)
+            if (Input.GetKeyDown(KeyCode.S))
+            {
+
+            }
             //旋轉
             if (Input.GetKeyDown(KeyCode.W))
             {
