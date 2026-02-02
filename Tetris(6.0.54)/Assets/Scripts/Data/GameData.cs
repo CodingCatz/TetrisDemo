@@ -274,6 +274,25 @@ namespace Puzzle.Tetris
             Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, color);
         }
         #endregion Brick狀態操作相關
+
+        #region NextUI狀態操作相關
+        /// <summary>
+        /// 設定NextUI的暫存狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        public static void SetNextUIToExist(Vector2Int pos, Type type)
+        {
+            NextUI[pos.x, pos.y].ChangeState(Brick.State.Exist, ActiveColor(type));
+        }
+        /// <summary>
+        /// 清除NextUI的暫存狀態
+        /// </summary>
+        /// <param name="pos">定位</param>
+        public static void SetNextUIToNone(Vector2Int pos)
+        {
+            NextUI[pos.x, pos.y].ChangeState(Brick.State.None, ActiveColor());
+        }
+        #endregion NextUI狀態操作相關
     }
 }
 

@@ -45,6 +45,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private int _score;
         /// <summary>
+        /// 遊戲是否初始完成
+        /// </summary>
+        private bool _isReady;
+        /// <summary>
         /// 遊戲是否結束
         /// </summary>
         private bool _isGameOver;
@@ -79,6 +83,14 @@ namespace Puzzle.Tetris
         /// </summary>
         private int Height => GameData.BoardHeight;
         /// <summary>
+        /// 預覽區寬
+        /// </summary>
+        private int NextWidth => GameData.NextWidth;
+        /// <summary>
+        /// 預覽區高
+        /// </summary>
+        private int NextHeight => GameData.NextHeight;
+        /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
         private bool BrickAlive => _currentBrick.isAlive;
@@ -105,13 +117,33 @@ namespace Puzzle.Tetris
         }
 
         /// <summary>
+        /// 隨機下一組磚塊資料
+        /// </summary>
+        private void RandonNextBrick()
+        {
+            if (_isReady) _nextBrick.ClearNextBrick();
+            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
+            _nextBrick.UpdateNextBrick();
+        }
+
+        /// <summary>
         /// 初始化遊戲
         /// </summary>
         private void InitialGame()
         {
-            _nextBrickType = data.RandomType();
             _score = 0;
             _isGameOver = false;
+
+            for (int y = 0; y < NextHeight; y++)
+            {//巢狀迴圈：3 * 4 次
+                for (int x = 0; x < NextWidth; x++)
+                {
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
+                }
+            }
+            //下一組磚塊資料
+            RandonNextBrick();
 
             //FOR迴圈：起始值;終點值;迭代值;
             for (int y = 0; y < Height; y++)
@@ -123,14 +155,7 @@ namespace Puzzle.Tetris
                 }
             }
 
-            for (int y = 0; y < GameData.NextHeight; y++)
-            {//巢狀迴圈：3 * 4 次
-                for (int x = 0; x < GameData.NextWidth; x++)
-                {
-                    //棋盤[指定的座標] = 具現化物件到特定目標
-                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
-                }
-            }
+            _isReady = true;
         }
         /// <summary>
         /// 執行滅頂動態
@@ -202,6 +227,14 @@ namespace Puzzle.Tetris
         /// </summary>
         private const int SPAWN_Y = 20;
         /// <summary>
+        /// [常數]預覽中心點座標X
+        /// </summary>
+        private const int NEXT_X = 1;
+        /// <summary>
+        /// [常數]預覽中心點座標Y
+        /// </summary>
+        private const int NEXT_Y = 1;
+        /// <summary>
         /// [常數]更新計數器閾值
         /// </summary>
         private const int COUNTER_TH = 50;
@@ -214,10 +247,11 @@ namespace Puzzle.Tetris
         /// 更新計數器
         /// </summary>
         private int _timeCounter;
+
         /// <summary>
-        /// 下個出現的方塊形狀
+        /// 下一個的方塊資料
         /// </summary>
-        private GameData.Type _nextBrickType;
+        private BrickData _nextBrick;
         /// <summary>
         /// 當前操作中的方塊資料
         /// </summary>
@@ -269,8 +303,8 @@ namespace Puzzle.Tetris
             _timeCounter = 0;//計時重置
             if (!BrickAlive)
             {//產生新方塊組
-                _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrickType);
-                _nextBrickType = data.RandomType();
+                _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
+                RandonNextBrick();
                 //滅頂邏輯
                 if (!_currentBrick.IsValid())
                 {

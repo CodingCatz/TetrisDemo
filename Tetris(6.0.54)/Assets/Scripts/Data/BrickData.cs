@@ -148,7 +148,7 @@ namespace Puzzle.Tetris
         }
         #endregion 移動旋轉相關功能
 
-        #region 視覺更新相關功能
+        #region 遊戲區視覺更新相關功能
         /// <summary>
         /// 清除磚塊組合狀態
         /// </summary>
@@ -181,6 +181,23 @@ namespace Puzzle.Tetris
                 }
             }
         }
-        #endregion 視覺更新相關功能
+        #endregion 遊戲區視覺更新相關功能
+
+        #region 預覽區視覺更新相關功能
+        public void ClearNextBrick()
+        {
+            foreach (Vector2Int cell in Cells)
+            {
+                GameData.SetNextUIToNone(cell);
+            }
+        }
+        public void UpdateNextBrick()
+        {
+            foreach (Vector2Int cell in Cells)
+            {
+                GameData.SetNextUIToExist(cell, type);
+            }
+        }
+        #endregion 預覽區視覺更新相關功能
     }
 }
