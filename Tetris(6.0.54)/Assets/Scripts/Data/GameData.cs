@@ -156,6 +156,18 @@ namespace Puzzle.Tetris
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
         public static Brick[,] Board { get; private set; }
+        /// <summary>
+        /// 預覽區寬
+        /// </summary>
+        public const int NextWidth = 3;
+        /// <summary>
+        /// 域覽區高
+        /// </summary>
+        public const int NextHeight = 4;
+        /// <summary>
+        /// 預覽區二維陣列
+        /// </summary>
+        public static Brick[,] NextUI { get; private set; }
         #endregion 公開資訊接口
 
         #region 建構式
@@ -167,6 +179,7 @@ namespace Puzzle.Tetris
             BoardWidth = 10;
             BoardHeight = 20;
             Board = new Brick[BoardWidth, BoardHeight];
+            NextUI = new Brick[NextWidth, NextHeight];
         }
 
         /// <summary>
@@ -179,6 +192,7 @@ namespace Puzzle.Tetris
             BoardWidth = width;
             BoardHeight = height;
             Board = new Brick[BoardWidth, BoardHeight];
+            NextUI = new Brick[NextWidth, NextHeight];
         }
         #endregion 建構式
 
@@ -192,6 +206,18 @@ namespace Puzzle.Tetris
         public void SetBrick(int x, int y, Brick brick)
         {
             Board[x, y] = brick;
+            //為了辨識容易將每個Brick依座標命名
+            brick.Initial($"Brick({x},{y})");
+        }
+        /// <summary>
+        /// 設定(建立)棋盤格上的磚
+        /// </summary>
+        /// <param name="x">座標X</param>
+        /// <param name="y">座標Y</param>
+        /// <param name="brick">磚塊實體</param>
+        public void SetNextUI(int x, int y, Brick brick)
+        {
+            NextUI[x, y] = brick;
             //為了辨識容易將每個Brick依座標命名
             brick.Initial($"Brick({x},{y})");
         }

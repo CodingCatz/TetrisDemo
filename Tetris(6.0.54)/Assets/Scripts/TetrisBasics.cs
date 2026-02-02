@@ -56,9 +56,13 @@ namespace Puzzle.Tetris
         /// </summary>
         public Brick brickTMP;
         /// <summary>
-        /// 棋盤載體UI
+        /// 棋盤面板UI
         /// </summary>
         public Transform boardUI;
+        /// <summary>
+        /// 磚塊預覽面板UI
+        /// </summary>
+        public Transform nextUI;
         /// <summary>
         /// 磚塊陣亡
         /// </summary>
@@ -116,6 +120,15 @@ namespace Puzzle.Tetris
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
+                }
+            }
+
+            for (int y = 0; y < GameData.NextHeight; y++)
+            {//巢狀迴圈：3 * 4 次
+                for (int x = 0; x < GameData.NextWidth; x++)
+                {
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
                 }
             }
         }
