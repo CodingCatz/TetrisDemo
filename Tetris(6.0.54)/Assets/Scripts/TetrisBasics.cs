@@ -59,6 +59,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private int moveCount;
         /// <summary>
+        /// 速降冷卻計時
+        /// </summary>
+        private float downTimer;
+        /// <summary>
         /// 遊戲進行成績
         /// </summary>
         private int _score;
@@ -113,6 +117,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private int MoveDir => Math.Sign(Input.GetAxis("Horizontal"));
         /// <summary>
+        /// 執行左右移動
+        /// </summary>
+        private bool LRMove => MoveDir != 0;
+        /// <summary>
         /// 第一次按下移動操作
         /// </summary>
         private bool FirstMove => moveCount < 0;
@@ -120,6 +128,14 @@ namespace Puzzle.Tetris
         /// 移動是否可以被觸發
         /// </summary>
         private bool MoveTrigger => moveTimer >= MOVE_SWD + (FirstMove ? 0 : moveCount * MOVE_CD);
+        /// <summary>
+        /// 執行速降操作
+        /// </summary>
+        private bool FastDown => Math.Sign(Input.GetAxis("Vertical")) < 0;
+        /// <summary>
+        /// 快速下降是否可以被觸發
+        /// </summary>
+        private bool FastDownTrigger => downTimer >= MOVE_CD;
         /// <summary>
         /// 當前操作中方塊組合是否存活
         /// </summary>
@@ -146,40 +162,6 @@ namespace Puzzle.Tetris
         }
 
         /// <summary>
-        /// 隨機下一組磚塊資料
-        /// </summary>
-        private void RandonNextBrick()
-        {
-            if (_isReady) _nextBrick.ClearNextBrick();
-            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
-            _nextBrick.UpdateNextBrick();
-        }
-
-        /// <summary>
-        /// 移動輸入
-        /// </summary>
-        private void MoveInput()
-        {
-            if (MoveDir != 0)
-            {//按下移動：A/D
-                if (MoveTrigger)
-                {//觸發移動
-                    if (TryMove(Vector2Int.right * MoveDir))
-                    {//檢查是否為按下A/D後第一次移動
-                        if (FirstMove) moveTimer = 0;//贈送第一次移動
-                        moveCount++;//正式計算連續移動次數
-                    }
-                }
-                moveTimer += Time.deltaTime;
-            }
-            else
-            {//放開A/D
-                moveTimer = MOVE_SWD;//立刻冷卻連續移動延遲
-                moveCount = -1;//立刻重置連續移動次數(避免每次冷卻重置)
-            }
-        }
-
-        /// <summary>
         /// 執行玩家操作偵測
         /// </summary>
         private void Update()
@@ -188,11 +170,6 @@ namespace Puzzle.Tetris
 
             MoveInput();
 
-            //下降(加速)
-            if (Input.GetKeyDown(KeyCode.S))
-            {
-
-            }
             //旋轉
             if (Input.GetKeyDown(KeyCode.W))
             {
@@ -236,6 +213,54 @@ namespace Puzzle.Tetris
         /// 當前操作中的方塊資料
         /// </summary>
         private BrickData _currentBrick;
+
+        /// <summary>
+        /// 隨機下一組磚塊資料
+        /// </summary>
+        private void RandomNextBrick()
+        {
+            if (_isReady) _nextBrick.ClearNextBrick();
+            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
+            _nextBrick.UpdateNextBrick();
+        }
+
+        /// <summary>
+        /// 移動輸入
+        /// </summary>
+        private void MoveInput()
+        {
+            if (LRMove)
+            {//按下移動：A/D
+                if (MoveTrigger)
+                {//觸發移動
+                    if (TryMove(Vector2Int.right * MoveDir))
+                    {//檢查是否為按下A/D後第一次移動
+                        if (FirstMove) moveTimer = 0;//贈送第一次移動
+                        moveCount++;//正式計算連續移動次數
+                    }
+                }
+                moveTimer += Time.deltaTime;
+            }
+            else
+            {//放開A/D
+                moveTimer = MOVE_SWD;//立刻冷卻連續移動延遲
+                moveCount = -1;//立刻重置連續移動次數(避免每次冷卻重置)
+            }
+
+            if (FastDown)
+            {//下降(加速)
+                if (FastDownTrigger)
+                {
+                    TryMove(Vector2Int.down);
+                    downTimer = 0;
+                }
+                downTimer += Time.deltaTime;
+            }
+            else
+            {//放開S
+                downTimer = 0;
+            }
+        }
 
         /// <summary>
         /// 嘗試旋轉方塊組合
@@ -282,7 +307,7 @@ namespace Puzzle.Tetris
             if (!BrickAlive)
             {//產生新方塊組
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
-                RandonNextBrick();
+                RandomNextBrick();
                 //滅頂邏輯
                 if (!_currentBrick.IsValid())
                 {
@@ -351,7 +376,7 @@ namespace Puzzle.Tetris
                 }
             }
             //下一組磚塊資料
-            RandonNextBrick();
+            RandomNextBrick();
 
             //FOR迴圈：起始值;終點值;迭代值;
             for (int y = 0; y < Height; y++)
