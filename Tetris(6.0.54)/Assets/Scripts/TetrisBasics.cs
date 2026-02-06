@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;//使用 XXXXXX命名空間
 
@@ -141,9 +142,7 @@ namespace Puzzle.Tetris
         #region 生命週期
         private void Start()
         {
-            //初始化遊戲
-            InitialGame();
-            GameLoop();
+            GameStart();
         }
 
         /// <summary>
@@ -154,38 +153,6 @@ namespace Puzzle.Tetris
             if (_isReady) _nextBrick.ClearNextBrick();
             _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
             _nextBrick.UpdateNextBrick();
-        }
-
-        /// <summary>
-        /// 初始化遊戲
-        /// </summary>
-        private void InitialGame()
-        {
-            _score = 0;
-            _isGameOver = false;
-
-            for (int y = 0; y < NextHeight; y++)
-            {//巢狀迴圈：3 * 4 次
-                for (int x = 0; x < NextWidth; x++)
-                {
-                    //棋盤[指定的座標] = 具現化物件到特定目標
-                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
-                }
-            }
-            //下一組磚塊資料
-            RandonNextBrick();
-
-            //FOR迴圈：起始值;終點值;迭代值;
-            for (int y = 0; y < Height; y++)
-            {//巢狀迴圈：10 * 20 次
-                for (int x = 0; x < Width; x++)
-                {
-                    //棋盤[指定的座標] = 具現化物件到特定目標
-                    data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
-                }
-            }
-
-            _isReady = true;
         }
 
         /// <summary>
@@ -209,22 +176,6 @@ namespace Puzzle.Tetris
             {//放開A/D
                 moveTimer = MOVE_SWD;//立刻冷卻連續移動延遲
                 moveCount = -1;//立刻重置連續移動次數(避免每次冷卻重置)
-            }
-        }
-
-        /// <summary>
-        /// 執行滅頂動態
-        /// </summary>
-        private void DieOut()
-        {
-            if (scanPos.y < Height)
-            {//掃描線從最底往上淹沒
-                for (int x = 0; x < Width; x++)
-                {//Y相同的一橫排變死色
-                    scanPos.x = x;
-                    GameData.SetBrickStateToDead(scanPos, brickDead);
-                }
-                scanPos.y++;//跳至下一排
             }
         }
 
@@ -350,28 +301,100 @@ namespace Puzzle.Tetris
             }
             _currentBrick.UpdateBrickState();
         }
+
+        /// <summary>
+        /// 執行滅頂動態
+        /// </summary>
+        private void DieOut()
+        {
+            if (scanPos.y < Height)
+            {//掃描線從最底往上淹沒
+                for (int x = 0; x < Width; x++)
+                {//Y相同的一橫排變死色
+                    scanPos.x = x;
+                    GameData.SetBrickStateToDead(scanPos, brickDead);
+                }
+                scanPos.y++;//跳至下一排
+            }
+        }
         #endregion 遊戲邏輯控制
 
         #region 遊戲流程控制
         /// <summary>
+        /// 執行序的識別碼
+        /// </summary>
+        private CancellationTokenSource _CTS;
+        /// <summary>
+        /// 遊戲流程開始(產生CTS)
+        /// </summary>
+        private async void GameStart()
+        {
+            _CTS?.Cancel();//萬一已存在舊的先刪除
+            _CTS = new CancellationTokenSource();
+            //初始化遊戲
+            await InitialGame(_CTS.Token);
+            //開始遊戲迴圈
+            await GameLoop(_CTS.Token);
+        }
+        /// <summary>
+        /// 初始化遊戲
+        /// </summary>
+        private async Task InitialGame(CancellationToken token)
+        {
+            //準備預覽UI
+            for (int y = 0; y < NextHeight; y++)
+            {//巢狀迴圈：3 * 4 次
+                for (int x = 0; x < NextWidth; x++)
+                {
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
+                }
+            }
+            //下一組磚塊資料
+            RandonNextBrick();
+
+            //FOR迴圈：起始值;終點值;迭代值;
+            for (int y = 0; y < Height; y++)
+            {//巢狀迴圈：10 * 20 次
+                for (int x = 0; x < Width; x++)
+                {
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
+                    await Task.Yield();
+                }
+            }
+            _score = 0;
+            _isGameOver = false;
+            _isReady = true;
+        }
+        /// <summary>
         /// [異步]遊戲迴圈
         /// </summary>
         /// <returns>執行任務</returns>
-        private async Task GameLoop()
+        private async Task GameLoop(CancellationToken token)
         {
             while (_isReady)
             {
                 if (IsGameOver)
                 {
                     DieOut();
-                    await Task.Delay(M_SEC / 20);
+                    await Task.Delay(M_SEC / Height, token);
                 }
                 else
                 {
                     DropBrick();
-                    await Task.Delay(GameSpeed);
+                    await Task.Delay(GameSpeed, token);
                 }
             }
+        }
+        /// <summary>
+        /// 遊戲摧毀(關閉)
+        /// </summary>
+        private void OnDestroy()
+        {
+            _CTS?.Cancel();//取消任務
+            _CTS?.Dispose();//釋放資源(記憶體)
+            _CTS = null;
         }
         #endregion 遊戲流程控制
     }
