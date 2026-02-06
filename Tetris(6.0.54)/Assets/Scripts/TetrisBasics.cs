@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using UnityEngine;//使用 XXXXXX命名空間
 
 //命名空間(程式資料夾的概念) 第一層名稱(.的)次一層名稱
@@ -125,7 +126,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲速率(共10級)
         /// </summary>
-        private int GameSpeed => COUNTER_TH - speed * 5;
+        private int GameSpeed => M_SEC - (speed * 100);
         /// <summary>
         /// 遊戲是否結束
         /// </summary>
@@ -142,6 +143,7 @@ namespace Puzzle.Tetris
         {
             //初始化遊戲
             InitialGame();
+            GameLoop();
         }
 
         /// <summary>
@@ -215,8 +217,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private void DieOut()
         {
-            if (_timeCounter < 5) return;
-            _timeCounter = 0;//計時重置
             if (scanPos.y < Height)
             {//掃描線從最底往上淹沒
                 for (int x = 0; x < Width; x++)
@@ -225,22 +225,6 @@ namespace Puzzle.Tetris
                     GameData.SetBrickStateToDead(scanPos, brickDead);
                 }
                 scanPos.y++;//跳至下一排
-            }
-        }
-
-        /// <summary>
-        /// 以每秒跳動50次的固定更新週期刷新畫面
-        /// </summary>
-        private void FixedUpdate()
-        {
-            _timeCounter++;//計算畫面更新
-            if (IsGameOver)
-            {
-                DieOut();
-            }
-            else 
-            {
-                DropBrick();
             }
         }
 
@@ -284,18 +268,14 @@ namespace Puzzle.Tetris
         /// </summary>
         private const int NEXT_Y = 1;
         /// <summary>
-        /// [常數]更新計數器閾值
+        /// 1000毫秒(1秒)
         /// </summary>
-        private const int COUNTER_TH = 50;
+        private const int M_SEC = 1000;
         /// <summary>
         /// [調速]速度等級(倍率：一個單位5)
         /// </summary>
         [Range(0,9)]
         public int speed = 0;
-        /// <summary>
-        /// 更新計數器
-        /// </summary>
-        private int _timeCounter;
 
         /// <summary>
         /// 下一個的方塊資料
@@ -348,8 +328,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private void DropBrick()
         {
-            if (_timeCounter < GameSpeed) return;
-            _timeCounter = 0;//計時重置
             if (!BrickAlive)
             {//產生新方塊組
                 _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
@@ -374,6 +352,27 @@ namespace Puzzle.Tetris
         }
         #endregion 遊戲邏輯控制
 
-
+        #region 遊戲流程控制
+        /// <summary>
+        /// [異步]遊戲迴圈
+        /// </summary>
+        /// <returns>執行任務</returns>
+        private async Task GameLoop()
+        {
+            while (_isReady)
+            {
+                if (IsGameOver)
+                {
+                    DieOut();
+                    await Task.Delay(M_SEC / 20);
+                }
+                else
+                {
+                    DropBrick();
+                    await Task.Delay(GameSpeed);
+                }
+            }
+        }
+        #endregion 遊戲流程控制
     }
 }
