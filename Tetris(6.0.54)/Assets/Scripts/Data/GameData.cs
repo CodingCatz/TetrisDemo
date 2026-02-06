@@ -251,6 +251,15 @@ namespace Puzzle.Tetris
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.None, ActiveColor());
         }
+        /// <summary>
+        /// 清除Brick的佔用狀態
+        /// </summary>
+        /// <param name="x">座標X</param>
+        /// <param name="y">座標Y</param>
+        public static void SetBrickStateToNone(int x, int y)
+        {
+            Board[x, y].ChangeState(Brick.State.None, ActiveColor());
+        }
 
         /// <summary>
         /// 設定Brick的暫存狀態
@@ -293,6 +302,66 @@ namespace Puzzle.Tetris
             NextUI[pos.x, pos.y].ChangeState(Brick.State.None, ActiveColor());
         }
         #endregion NextUI狀態操作相關
+
+
+        #region 消除邏輯
+        /// <summary>
+        /// 確認磚塊連線消除
+        /// </summary>
+        public static void CheckClearLines()
+        {
+            for (int y = 0; y < BoardHeight;)
+            {
+                if (IsLineFull(y))
+                {//該橫排是否填滿
+                    //清除指定橫排
+                    ClearLine(y);
+                    //整體磚塊資料下降
+                    ShiftRowsDown(y);
+                }
+                else y++;
+            }
+        }
+        /// <summary>
+        /// 檢查特定Y橫排是否滿線
+        /// </summary>
+        /// <param name="y">Y橫排值</param>
+        /// <returns>是否滿線</returns>
+        private static bool IsLineFull(int y)
+        {
+            for (int x = 0; x < BoardWidth; x++)
+            {
+                if (Board[x, y].state != Brick.State.Occupied) return false;
+            }
+            return true;
+        }
+        /// <summary>
+        /// 清除特定Y橫排
+        /// </summary>
+        /// <param name="y">Y橫排值</param>
+        private static void ClearLine(int y)
+        {
+            for (int x = 0; x < BoardWidth; x++)
+            {
+                SetBrickStateToNone(x, y);
+            }
+        }
+        /// <summary>
+        /// 從起始排Y以上磚塊資料下移
+        /// </summary>
+        /// <param name="startY">起始排Y值</param>
+        private static void ShiftRowsDown(int startY)
+        {
+            for (int y = startY; y < BoardHeight - 1; y++)
+            {//頂排不用做移動所以 -1
+                for (int x = 0; x < BoardWidth; x++)
+                {//將上一排狀態轉移至這排
+                    Board[x, y].ChangeState(Board[x, y + 1]);
+                }
+            }
+            ClearLine(BoardHeight - 1);//最後一排清除
+        }
+        #endregion 消除邏輯
     }
 }
 

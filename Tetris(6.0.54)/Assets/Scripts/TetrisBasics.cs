@@ -365,10 +365,15 @@ namespace Puzzle.Tetris
                 if (!TryMove(Vector2Int.down))
                 {//下墜移動失敗：產生撞擊
                     _currentBrick.Lock();
+                    _currentBrick.UpdateBrickState();
+                    //觸發消除檢查
+                    GameData.CheckClearLines();
                 }
             }
             _currentBrick.UpdateBrickState();
         }
         #endregion 遊戲邏輯控制
+
+
     }
 }

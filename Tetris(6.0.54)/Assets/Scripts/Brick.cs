@@ -45,9 +45,19 @@ namespace Puzzle.Tetris
         #endregion 基礎元件
 
         /// <summary>
-        /// Brick狀態讀取
+        /// [唯讀]Brick狀態
         /// </summary>
         public State state { get; private set; }
+        /// <summary>
+        /// [唯讀]Brick的顏色
+        /// </summary>
+        public Color color
+        {
+            get
+            {
+                return image.color;
+            }
+        }
 
         /// <summary>
         /// 初始化
@@ -68,6 +78,15 @@ namespace Puzzle.Tetris
             this.state = state;
             //更新磚塊視覺
             image.color = color;
+        }
+        /// <summary>
+        /// 切換磚塊的狀態(拷貝別的磚塊)
+        /// </summary>
+        /// <param name="brick">目標磚塊</param>
+        public void ChangeState(Brick brick)
+        {
+            state = brick.state;
+            image.color = brick.color;
         }
     }
 }
