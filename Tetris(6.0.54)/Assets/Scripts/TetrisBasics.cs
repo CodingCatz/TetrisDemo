@@ -175,6 +175,16 @@ namespace Puzzle.Tetris
             {
                 TryRota();
             }
+
+            //瞬降(硬降)
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                _currentBrick.ClearBrickState();//清除舊視覺
+                _currentBrick = GetLanding(_currentBrick);//落點偵測
+                _currentBrick.Lock();//鎖定
+                _currentBrick.UpdateBrickState();//更新
+                GameData.CheckClearLines();//觸發消除檢查
+            }
         }
         #endregion 生命週期
 
@@ -297,6 +307,23 @@ namespace Puzzle.Tetris
                 return true;
             }
             return false;
+        }
+
+        /// <summary>
+        /// 當前磚塊組的垂直著陸點
+        /// </summary>
+        /// <param name="orgBrick">當前磚塊組原始資料</param>
+        /// <returns>著陸點的虛擬磚塊組</returns>
+        private BrickData GetLanding(BrickData orgBrick)
+        {
+            BrickData tmp = orgBrick;//影Brick
+            do
+            {//先模擬位移一次
+                tmp.Move(Vector2Int.down);
+            }//再判斷是否繼續循環 
+            while (tmp.IsValid());
+            tmp.Move(Vector2Int.up);//回彈處理
+            return tmp;
         }
 
         /// <summary>

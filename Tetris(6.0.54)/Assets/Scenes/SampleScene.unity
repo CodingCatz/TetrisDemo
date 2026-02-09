@@ -399,7 +399,7 @@ MonoBehaviour:
   boardUI: {fileID: 1177812928}
   nextUI: {fileID: 1212882282}
   brickDead: {r: 0.4811321, g: 0.35656798, b: 0.22014064, a: 1}
-  speed: 9
+  speed: 0
 --- !u!1 &1177812927
 GameObject:
   m_ObjectHideFlags: 0
