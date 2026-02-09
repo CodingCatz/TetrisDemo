@@ -334,7 +334,6 @@ namespace Puzzle.Tetris
                     GameData.CheckClearLines();
                 }
             }
-            _currentBrick.UpdateBrickState();
         }
 
         /// <summary>
