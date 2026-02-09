@@ -174,7 +174,21 @@ namespace Puzzle.Tetris
         /// <param name="cells">方塊組座標陣列</param>
         public void ClearBrickState()
         {
+            //優先清除鬼影磚塊組
+            ClearGhostBrickState();
+
             foreach (Vector2Int cell in Cells)
+            {//continue；略過超出範圍的cell
+                if (cell.y >= H) continue;
+                GameData.SetBrickStateToNone(cell);
+            }
+        }
+        /// <summary>
+        /// 清除鬼影磚塊組狀態
+        /// </summary>
+        public void ClearGhostBrickState()
+        {
+            foreach (Vector2Int cell in GhostData.Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
                 GameData.SetBrickStateToNone(cell);
@@ -186,6 +200,9 @@ namespace Puzzle.Tetris
         /// <param name="cells">方塊組座標陣列</param>
         public void UpdateBrickState()
         {
+            //優先刷新鬼影磚塊組
+            UpdateGhostBrickState();
+
             foreach (Vector2Int cell in Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;

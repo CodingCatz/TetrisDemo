@@ -303,7 +303,6 @@ namespace Puzzle.Tetris
             {
                 _currentBrick.ClearBrickState();
                 _currentBrick = tmp;//套用影Brick
-                _currentBrick.UpdateGhostBrickState();
                 _currentBrick.UpdateBrickState();
                 return true;
             }
