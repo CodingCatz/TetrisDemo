@@ -180,7 +180,7 @@ namespace Puzzle.Tetris
             if (Input.GetKeyDown(KeyCode.Space))
             {
                 _currentBrick.ClearBrickState();//清除舊視覺
-                _currentBrick = GetLanding(_currentBrick);//落點偵測
+                _currentBrick = _currentBrick.GhostData;//落點偵測
                 _currentBrick.Lock();//鎖定
                 _currentBrick.UpdateBrickState();//更新
                 GameData.CheckClearLines();//觸發消除檢查
@@ -216,11 +216,11 @@ namespace Puzzle.Tetris
         public int speed = 0;
 
         /// <summary>
-        /// 下一個的方塊資料
+        /// 下一個的磚塊組資料
         /// </summary>
         private BrickData _nextBrick;
         /// <summary>
-        /// 當前操作中的方塊資料
+        /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
 
@@ -303,27 +303,11 @@ namespace Puzzle.Tetris
             {
                 _currentBrick.ClearBrickState();
                 _currentBrick = tmp;//套用影Brick
+                _currentBrick.UpdateGhostBrickState();
                 _currentBrick.UpdateBrickState();
                 return true;
             }
             return false;
-        }
-
-        /// <summary>
-        /// 當前磚塊組的垂直著陸點
-        /// </summary>
-        /// <param name="orgBrick">當前磚塊組原始資料</param>
-        /// <returns>著陸點的虛擬磚塊組</returns>
-        private BrickData GetLanding(BrickData orgBrick)
-        {
-            BrickData tmp = orgBrick;//影Brick
-            do
-            {//先模擬位移一次
-                tmp.Move(Vector2Int.down);
-            }//再判斷是否繼續循環 
-            while (tmp.IsValid());
-            tmp.Move(Vector2Int.up);//回彈處理
-            return tmp;
         }
 
         /// <summary>

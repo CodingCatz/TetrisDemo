@@ -60,6 +60,25 @@ namespace Puzzle.Tetris
         /// </summary>
         public Vector2Int[] Cells => CalRota();
 
+        public BrickData GhostData => GetLanding();
+
+        /// <summary>
+        /// 當前磚塊組的垂直著陸點
+        /// </summary>
+        /// <param name="orgBrick">當前磚塊組原始資料</param>
+        /// <returns>著陸點的虛擬磚塊組</returns>
+        private BrickData GetLanding()
+        {
+            BrickData tmp = this;//影Brick
+            do
+            {//先模擬位移一次
+                tmp.Move(Vector2Int.down);
+            }//再判斷是否繼續循環 
+            while (tmp.IsValid());
+            tmp.Move(Vector2Int.up);//回彈處理
+            return tmp;
+        }
+
         private Vector2Int[] CalRota()
         {
             //讀取模板
@@ -178,6 +197,17 @@ namespace Puzzle.Tetris
                 {
                     GameData.SetBrickStateToOccupied(cell, type);
                 }
+            }
+        }
+        /// <summary>
+        /// 更新鬼影磚塊組狀態
+        /// </summary>
+        public void UpdateGhostBrickState()
+        {
+            foreach(Vector2Int cell in GhostData.Cells)
+            {//continue；略過超出範圍的cell
+                if (cell.y >= H) continue;
+                GameData.SetBrickStateToGhost(cell, type);
             }
         }
         #endregion 遊戲區視覺更新相關功能

@@ -282,6 +282,11 @@ namespace Puzzle.Tetris
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, color);
         }
+
+        public static void SetBrickStateToGhost(Vector2Int pos, Type type)
+        {
+            Board[pos.x, pos.y].ChangeState(Brick.State.Ghost, ActiveColor(type));
+        }
         #endregion Brick狀態操作相關
 
         #region NextUI狀態操作相關
@@ -302,7 +307,6 @@ namespace Puzzle.Tetris
             NextUI[pos.x, pos.y].ChangeState(Brick.State.None, ActiveColor());
         }
         #endregion NextUI狀態操作相關
-
 
         #region 消除邏輯
         /// <summary>
