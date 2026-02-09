@@ -80,7 +80,7 @@ namespace Puzzle.Tetris
         public void ChangeState(State state, Color color)
         {
             this.state = state;
-            color.a = state == State.Ghost ? 0.2f : 1f;
+            color.a = state == State.Ghost ? 0.6f : 1f;
             //更新磚塊視覺
             image.color = color;
         }

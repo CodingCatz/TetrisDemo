@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Puzzle.Tetris
 {
@@ -285,7 +287,7 @@ namespace Puzzle.Tetris
 
         public static void SetBrickStateToGhost(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Ghost, ActiveColor(type));
+            Board[pos.x, pos.y].ChangeState(Brick.State.Ghost, Color.black);
         }
         #endregion Brick狀態操作相關
 
@@ -312,12 +314,14 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 確認磚塊連線消除
         /// </summary>
-        public static void CheckClearLines()
+        public static void CheckClearLines(Action<int> ClearRows)
         {
+            int count = 0;
             for (int y = 0; y < BoardHeight;)
             {
                 if (IsLineFull(y))
                 {//該橫排是否填滿
+                    count++;
                     //清除指定橫排
                     ClearLine(y);
                     //整體磚塊資料下降
@@ -325,6 +329,7 @@ namespace Puzzle.Tetris
                 }
                 else y++;
             }
+            ClearRows(count);
         }
         /// <summary>
         /// 檢查特定Y橫排是否滿線

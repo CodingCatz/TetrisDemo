@@ -31,15 +31,15 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 級距常數
         /// </summary>
-        private const int LV_RANGE = 1000;
+        private const int LV_RANGE = 10;
         /// <summary>
         /// 經由分數計算出來的遊戲等級
         /// </summary>
         private int _level
         {
             get
-            {//級距：1000
-                return _score / LV_RANGE;
+            {//級距：10
+                return Math.Min(_clearRows / LV_RANGE, 9);
             }
         }
         /// <summary>
@@ -66,6 +66,10 @@ namespace Puzzle.Tetris
         /// 遊戲進行成績
         /// </summary>
         private int _score;
+        /// <summary>
+        /// 累積消除行數
+        /// </summary>
+        private int _clearRows;
         /// <summary>
         /// 遊戲是否初始完成
         /// </summary>
@@ -143,7 +147,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲速率(共10級)
         /// </summary>
-        private int GameSpeed => M_SEC - (speed * 100);
+        private int GameSpeed => M_SEC - (LV * 100);
         /// <summary>
         /// 遊戲是否結束
         /// </summary>
@@ -183,7 +187,7 @@ namespace Puzzle.Tetris
                 _currentBrick = _currentBrick.GhostData;//落點偵測
                 _currentBrick.Lock();//鎖定
                 _currentBrick.UpdateBrickState();//更新
-                GameData.CheckClearLines();//觸發消除檢查
+                GameData.CheckClearLines(ClearRows);//觸發消除檢查
             }
         }
         #endregion 生命週期
@@ -213,7 +217,7 @@ namespace Puzzle.Tetris
         /// [調速]速度等級(倍率：一個單位5)
         /// </summary>
         [Range(0,9)]
-        public int speed = 0;
+        public int LV = 0;
 
         /// <summary>
         /// 下一個的磚塊組資料
@@ -223,6 +227,16 @@ namespace Puzzle.Tetris
         /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
+
+        /// <summary>
+        /// 清除行數累進(等級提升計算)
+        /// </summary>
+        /// <param name="rows">清除行數</param>
+        private void ClearRows(int rows)
+        {
+            _clearRows += rows;
+            if (LV < _level) LV = _level;
+        }
 
         /// <summary>
         /// 隨機下一組磚塊資料
@@ -331,7 +345,7 @@ namespace Puzzle.Tetris
                     _currentBrick.Lock();
                     _currentBrick.UpdateBrickState();
                     //觸發消除檢查
-                    GameData.CheckClearLines();
+                    GameData.CheckClearLines(ClearRows);
                 }
             }
         }
