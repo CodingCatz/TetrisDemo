@@ -71,6 +71,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private int _clearRows;
         /// <summary>
+        /// 下次落磚時間(間隔)
+        /// </summary>
+        private float _nextDropTime;
+        /// <summary>
         /// 遊戲是否初始完成
         /// </summary>
         private bool _isReady;
@@ -153,9 +157,17 @@ namespace Puzzle.Tetris
         /// </summary>
         private int GameSpeed => M_SEC - (LV * 100);
         /// <summary>
+        /// 落磚時間間隔
+        /// </summary>
+        private float DropTimeGap => GameSpeed / 1000f;
+        /// <summary>
         /// [拒絕任何人為操作]遊戲是否正在處裡核心狀態操作
         /// </summary>
         private bool IsCoreLock => _isGameOver || _isProcessing;
+        /// <summary>
+        /// 是否到達下次落磚時間
+        /// </summary>
+        private bool IsNextDrop => Time.time > _nextDropTime;
         /// <summary>
         /// 遊戲是否結束
         /// </summary>
@@ -448,13 +460,37 @@ namespace Puzzle.Tetris
                     DieOut();
                     await Task.Delay(M_SEC / Height, token);
                 }
+                //計算下次磚塊下落(毫秒)
+                int waitMS = Mathf.CeilToInt((_nextDropTime - Time.time) * 1000);
+
+                if (waitMS > 0)
+                {//等待一次落磚間隔
+                    await Task.Delay(waitMS, token);
+                }
                 else
+                {//落磚前1幀的安全間隙
+                    await Task.Yield();
+                }
+
+                if (!IsCoreLock && IsNextDrop) 
                 {
+                    _isProcessing = true;
                     DropBrick();
-                    await Task.Delay(GameSpeed, token);
+                    //更新下次落磚計時;await Task.Delay(GameSpeed, token);
+                    ResetDropTimer();
+                    _isProcessing = false;
                 }
             }
         }
+
+        /// <summary>
+        /// 重設落磚計時器
+        /// </summary>
+        private void ResetDropTimer()
+        {
+            _nextDropTime = Time.time + DropTimeGap;
+        }
+
         /// <summary>
         /// 遊戲摧毀(關閉)
         /// </summary>
