@@ -75,7 +75,11 @@ namespace Puzzle.Tetris
         /// </summary>
         private bool _isReady;
         /// <summary>
-        /// 遊戲是否結束
+        /// 狀態鎖：遊戲(落磚)循環中
+        /// </summary>
+        private bool _isProcessing;
+        /// <summary>
+        /// 狀態鎖：遊戲是否結束
         /// </summary>
         private bool _isGameOver;
         #endregion 基礎資料
@@ -149,6 +153,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private int GameSpeed => M_SEC - (LV * 100);
         /// <summary>
+        /// [拒絕任何人為操作]遊戲是否正在處裡核心狀態操作
+        /// </summary>
+        private bool IsCoreLock => _isGameOver || _isProcessing;
+        /// <summary>
         /// 遊戲是否結束
         /// </summary>
         private bool IsGameOver => _isGameOver;
@@ -170,7 +178,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void Update()
         {
-            if (IsGameOver) return;
+            if (IsCoreLock) return;
 
             MoveInput();
 
@@ -183,11 +191,7 @@ namespace Puzzle.Tetris
             //瞬降(硬降)
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                _currentBrick.ClearBrickState();//清除舊視覺
-                _currentBrick = _currentBrick.GhostData;//落點偵測
-                _currentBrick.Lock();//鎖定
-                _currentBrick.UpdateBrickState();//更新
-                GameData.CheckClearLines(ClearRows);//觸發消除檢查
+                HardDrop();
             }
         }
         #endregion 生命週期
@@ -348,6 +352,22 @@ namespace Puzzle.Tetris
                     GameData.CheckClearLines(ClearRows);
                 }
             }
+        }
+
+        /// <summary>
+        /// 硬降：瞬間到位
+        /// </summary>
+        private void HardDrop()
+        {
+            _isProcessing = true;//上鎖
+            //硬降過程
+            _currentBrick.ClearBrickState();//清除舊視覺
+            _currentBrick = _currentBrick.GhostData;//落點偵測
+            _currentBrick.Lock();//鎖定
+            _currentBrick.UpdateBrickState();//更新
+            GameData.CheckClearLines(ClearRows);//觸發消除檢查
+            
+            _isProcessing = false;//解鎖
         }
 
         /// <summary>
