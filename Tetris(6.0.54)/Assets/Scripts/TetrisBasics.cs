@@ -75,9 +75,17 @@ namespace Puzzle.Tetris
         /// </summary>
         private float _nextDropTime;
         /// <summary>
+        /// 磚塊鎖死的時間(間隔)
+        /// </summary>
+        private float _lockTime;
+        /// <summary>
         /// 遊戲是否初始完成
         /// </summary>
         private bool _isReady;
+        /// <summary>
+        /// 磚塊觸底
+        /// </summary>
+        private bool _isGrounded;
         /// <summary>
         /// 狀態鎖：遊戲(落磚)循環中
         /// </summary>
@@ -161,6 +169,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private float DropTimeGap => GameSpeed / 1000f;
         /// <summary>
+        /// 磚塊是否觸底
+        /// </summary>
+        private bool IsGrounded => _isGrounded;
+        /// <summary>
         /// [拒絕任何人為操作]遊戲是否正在處裡核心狀態操作
         /// </summary>
         private bool IsCoreLock => _isGameOver || _isProcessing;
@@ -243,6 +255,39 @@ namespace Puzzle.Tetris
         /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
+
+        /// <summary>
+        /// 產生新方塊組
+        /// </summary>
+        private void SpwanBrick()
+        {
+            _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
+            RandomNextBrick();
+            //滅頂邏輯
+            if (!_currentBrick.IsValid())
+            {
+                _isGameOver = true;
+            }
+            else
+            {
+                _currentBrick.UpdateBrickState();
+                CheckGrounded();
+                ResetDropTimer();
+            }
+        }
+
+        /// <summary>
+        /// 觸底鎖定 & 產生新掉落
+        /// </summary>
+        private void LockNextDrop()
+        {
+            //Lock
+            _currentBrick.Lock();
+            _currentBrick.UpdateBrickState();
+            GameData.CheckClearLines(ClearRows);
+            //NextDrop
+            SpwanBrick();
+        }
 
         /// <summary>
         /// 清除行數累進(等級提升計算)
@@ -337,6 +382,7 @@ namespace Puzzle.Tetris
                 _currentBrick.ClearBrickState();
                 _currentBrick = tmp;//套用影Brick
                 _currentBrick.UpdateBrickState();
+                CheckGrounded();//任何的移動都要檢查接下來是否撞擊
                 return true;
             }
             return false;
@@ -378,14 +424,27 @@ namespace Puzzle.Tetris
             //硬降過程
             _currentBrick.ClearBrickState();//清除舊視覺
             _currentBrick = _currentBrick.GhostData;//落點偵測
-            _currentBrick.Lock();//鎖定
-            _currentBrick.UpdateBrickState();//更新
-            GameData.CheckClearLines(ClearRows);//觸發消除檢查
-            
-            DropBrick();
-            ResetDropTimer();
+            LockNextDrop();
 
             _isProcessing = false;//解鎖
+        }
+
+        /// <summary>
+        /// 檢查磚塊是否觸底(計算可極限操作的時間)
+        /// </summary>
+        private void CheckGrounded()
+        {
+            BrickData tmp = _currentBrick;//影Brick
+            tmp.Move(Vector2Int.down);//模擬下落
+            if (tmp.IsValid())
+            {//不穿牆不卡磚
+                _isGrounded = false;
+            }
+            else
+            {
+                _isGrounded = true;
+                _lockTime = Time.time + DropTimeGap;
+            }
         }
 
         /// <summary>
@@ -422,6 +481,7 @@ namespace Puzzle.Tetris
             //開始遊戲迴圈
             await GameLoop(_CTS.Token);
         }
+
         /// <summary>
         /// 初始化遊戲
         /// </summary>
@@ -453,6 +513,7 @@ namespace Puzzle.Tetris
             _isGameOver = false;
             _isReady = true;
         }
+
         /// <summary>
         /// [異步]遊戲迴圈
         /// </summary>
