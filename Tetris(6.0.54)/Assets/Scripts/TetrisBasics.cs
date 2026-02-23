@@ -169,9 +169,9 @@ namespace Puzzle.Tetris
         /// </summary>
         private float DropTimeGap => GameSpeed / 1000f;
         /// <summary>
-        /// 磚塊是否觸底
+        /// 磚塊是否觸底鎖定
         /// </summary>
-        private bool IsGrounded => _isGrounded;
+        private bool IsLocked => _isGrounded && Time.time >= _lockTime;
         /// <summary>
         /// [拒絕任何人為操作]遊戲是否正在處裡核心狀態操作
         /// </summary>
@@ -179,7 +179,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 是否到達下次落磚時間
         /// </summary>
-        private bool IsNextDrop => Time.time > _nextDropTime;
+        private bool IsNextDrop => Time.time >= _nextDropTime;
         /// <summary>
         /// 遊戲是否結束
         /// </summary>
@@ -259,7 +259,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 產生新方塊組
         /// </summary>
-        private void SpwanBrick()
+        private void SpawnBrick()
         {
             _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
             RandomNextBrick();
@@ -281,12 +281,14 @@ namespace Puzzle.Tetris
         /// </summary>
         private void LockNextDrop()
         {
+            _isProcessing = true;
             //Lock
             _currentBrick.Lock();
             _currentBrick.UpdateBrickState();
             GameData.CheckClearLines(ClearRows);
             //NextDrop
-            SpwanBrick();
+            SpawnBrick();
+            _isProcessing = false;
         }
 
         /// <summary>
@@ -392,27 +394,13 @@ namespace Puzzle.Tetris
         /// 方塊下墜
         /// </summary>
         private void DropBrick()
-        {
-            if (!BrickAlive)
-            {//產生新方塊組
-                _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
-                RandomNextBrick();
-                //滅頂邏輯
-                if (!_currentBrick.IsValid())
-                {
-                    _isGameOver = true;
-                }
+        { //自然下墜
+            _isProcessing = true;
+            if (TryMove(Vector2Int.down))
+            {
+                ResetDropTimer();
             }
-            else
-            {//自然下墜
-                if (!TryMove(Vector2Int.down))
-                {//下墜移動失敗：產生撞擊
-                    _currentBrick.Lock();
-                    _currentBrick.UpdateBrickState();
-                    //觸發消除檢查
-                    GameData.CheckClearLines(ClearRows);
-                }
-            }
+            _isProcessing = false;
         }
 
         /// <summary>
@@ -512,6 +500,7 @@ namespace Puzzle.Tetris
             _score = 0;
             _isGameOver = false;
             _isReady = true;
+            SpawnBrick();//產生第一塊磚
         }
 
         /// <summary>
@@ -522,30 +511,22 @@ namespace Puzzle.Tetris
         {
             while (_isReady)
             {
+                await Task.Yield();//逐幀運行
+
                 if (IsGameOver)
                 {
                     DieOut();
                     await Task.Delay(M_SEC / Height, token);
-                }
-                //計算下次磚塊下落(毫秒)
-                int waitMS = Mathf.CeilToInt((_nextDropTime - Time.time) * 1000);
-
-                if (waitMS > 0)
-                {//等待一次落磚間隔
-                    await Task.Delay(waitMS, token);
-                }
-                else
-                {//落磚前1幀的安全間隙
-                    await Task.Yield();
+                    continue;//省略後續檢測
                 }
 
-                if (!IsCoreLock && IsNextDrop) 
-                {//檢查：遊戲未結束 & 未有硬降輸入鎖定 & 落磚時間已到
-                    _isProcessing = true;
+                if (IsLocked)
+                {//檢查：是否觸底鎖定
+                    LockNextDrop();
+                }
+                else if (IsNextDrop) 
+                {//檢查：落磚時間是否已到
                     DropBrick();
-                    //更新下次落磚計時;await Task.Delay(GameSpeed, token);
-                    ResetDropTimer();
-                    _isProcessing = false;
                 }
             }
         }
