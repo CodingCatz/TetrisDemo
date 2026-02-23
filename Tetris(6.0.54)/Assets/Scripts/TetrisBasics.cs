@@ -291,7 +291,10 @@ namespace Puzzle.Tetris
             {//下降(加速)
                 if (FastDownTrigger)
                 {
-                    TryMove(Vector2Int.down);
+                    if (TryMove(Vector2Int.down))
+                    {//成功移動：強制完成一個間隔
+                        ResetDropTimer();
+                    }
                     downTimer = 0;
                 }
                 downTimer += Time.deltaTime;
@@ -379,6 +382,9 @@ namespace Puzzle.Tetris
             _currentBrick.UpdateBrickState();//更新
             GameData.CheckClearLines(ClearRows);//觸發消除檢查
             
+            DropBrick();
+            ResetDropTimer();
+
             _isProcessing = false;//解鎖
         }
 
@@ -473,7 +479,7 @@ namespace Puzzle.Tetris
                 }
 
                 if (!IsCoreLock && IsNextDrop) 
-                {
+                {//檢查：遊戲未結束 & 未有硬降輸入鎖定 & 落磚時間已到
                     _isProcessing = true;
                     DropBrick();
                     //更新下次落磚計時;await Task.Delay(GameSpeed, token);
