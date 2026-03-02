@@ -119,19 +119,21 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 棋盤寬
         /// </summary>
-        private int Width => GameData.BoardWidth;
+        private int Width => TetrisConfig.BoardWidth;
         /// <summary>
         /// 棋盤高
         /// </summary>
-        private int Height => GameData.BoardHeight;
+        private int Height => TetrisConfig.BoardHeight;
         /// <summary>
         /// 預覽區寬
         /// </summary>
-        private int NextWidth => GameData.NextWidth;
+        private int NextWidth => TetrisConfig.NextWidth;
         /// <summary>
         /// 預覽區高
         /// </summary>
-        private int NextHeight => GameData.NextHeight;
+        private int NextHeight => TetrisConfig.NextHeight;
+
+        private Vector2Int[] WallKickOffests => TetrisConfig.WallKickOffests;
         /// <summary>
         /// 左右(A/D)操作數值
         /// </summary>
@@ -351,20 +353,6 @@ namespace Puzzle.Tetris
                 downTimer = 0;
             }
         }
-        /// <summary>
-        /// 各種可能的踢牆位移
-        /// </summary>
-        private readonly Vector2Int[] WALL_KICK_OFFSETS
-            = new Vector2Int[]
-        {
-            Vector2Int.zero,
-            Vector2Int.left,
-            Vector2Int.right,
-            Vector2Int.up,
-            Vector2Int.left * 2,
-            Vector2Int.right * 2,
-            Vector2Int.up * 2,
-        };
 
         /// <summary>
         /// 嘗試旋轉方塊組合
@@ -375,7 +363,7 @@ namespace Puzzle.Tetris
             //模擬旋轉
             tmp.Rota();
             //踢牆偏移量遍歷(找到第一個合法位置)
-            foreach (Vector2Int offest in WALL_KICK_OFFSETS)
+            foreach (Vector2Int offest in WallKickOffests)
             {
                 BrickData tmpKick = tmp;//影tmpBrick
                 tmpKick.Move(offest);

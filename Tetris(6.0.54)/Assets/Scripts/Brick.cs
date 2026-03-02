@@ -70,7 +70,7 @@ namespace Puzzle.Tetris
         public void Initial(string name)
         {
             this.name = name;
-            ChangeState(State.None, GameData.ActiveColor());
+            ChangeState(State.None, TetrisConfig.ActiveColor());
         }
 
         /// <summary>

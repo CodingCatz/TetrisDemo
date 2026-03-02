@@ -11,7 +11,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 形狀類型
         /// </summary>
-        public GameData.Type type;
+        public Type type;
         /// <summary>
         /// 錨點X座標
         /// </summary>
@@ -82,7 +82,7 @@ namespace Puzzle.Tetris
         private Vector2Int[] CalRota()
         {
             //讀取模板
-            Vector2Int[] tmp = GameData.rotaTmp[type][rotaIndex];
+            Vector2Int[] tmp = TetrisConfig.RotaTmp[type][rotaIndex];
             Vector2Int[] result = new Vector2Int[tmp.Length];
             for (int i = 0; i < tmp.Length; i++)
             {
@@ -97,8 +97,8 @@ namespace Puzzle.Tetris
         #endregion 操作屬性
 
         #region 初始化
-        private int W => GameData.BoardWidth;
-        private int H => GameData.BoardHeight;
+        private int W => TetrisConfig.BoardWidth;
+        private int H => TetrisConfig.BoardHeight;
 
         /// <summary>
         /// 設定初始狀態
@@ -106,7 +106,7 @@ namespace Puzzle.Tetris
         /// <param name="x">起始X</param>
         /// <param name="y">起始Y</param>
         /// <param name="type">形狀</param>
-        public void SetData(int x, int y, GameData.Type type)
+        public void SetData(int x, int y, Type type)
         {
             isAlive = true;
             this.x = x;
@@ -161,7 +161,7 @@ namespace Puzzle.Tetris
         public void Rota()
         {
             //正方形不旋轉
-            if (type == GameData.Type.O) return;
+            if (type == Type.O) return;
             //旋轉索引+1
             rotaIndex++;
         }
