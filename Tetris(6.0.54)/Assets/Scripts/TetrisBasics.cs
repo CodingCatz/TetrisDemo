@@ -13,11 +13,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// [靜態]data資料物件實體
         /// </summary>
-        private static GameData _data;
+        private GameData _data;
         /// <summary>
         /// [靜態]公開取用的data物件(唯讀)
         /// </summary>
-        public static GameData data
+        public GameData data
         {
             get
             {
