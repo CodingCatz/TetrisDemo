@@ -13,12 +13,12 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
-        public static Brick[,] Board { get; private set; }
+        public Brick[,] Board { get; private set; }
         
         /// <summary>
         /// 預覽區二維陣列
         /// </summary>
-        public static Brick[,] NextUI { get; private set; }
+        public Brick[,] NextUI { get; private set; }
         #endregion 公開資訊接口
 
         #region 建構式
@@ -70,6 +70,7 @@ namespace Puzzle.Tetris
         }
         #endregion 初始化遊戲資料
 
+        #region Brick狀態操作相關
         /// <summary>
         /// 隨機取得一個方塊形狀
         /// </summary>
@@ -79,13 +80,12 @@ namespace Puzzle.Tetris
             return (Type)Random.Range(0, 7);
         }
 
-        #region Brick狀態操作相關
         /// <summary>
         /// 取得特定位置磚塊的狀態
         /// </summary>
         /// <param name="pos">定位</param>
         /// <returns>磚塊的狀態</returns>
-        public static Brick.State GetBrickState(Vector2Int pos)
+        public Brick.State GetBrickState(Vector2Int pos)
         {
             return Board[pos.x, pos.y].state;
         }
@@ -94,7 +94,7 @@ namespace Puzzle.Tetris
         /// 清除Brick的佔用狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetBrickStateToNone(Vector2Int pos)
+        public void SetBrickStateToNone(Vector2Int pos)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
         }
@@ -103,7 +103,7 @@ namespace Puzzle.Tetris
         /// </summary>
         /// <param name="x">座標X</param>
         /// <param name="y">座標Y</param>
-        public static void SetBrickStateToNone(int x, int y)
+        public void SetBrickStateToNone(int x, int y)
         {
             Board[x, y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
         }
@@ -112,7 +112,7 @@ namespace Puzzle.Tetris
         /// 設定Brick的暫存狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetBrickStateToExist(Vector2Int pos, Type type)
+        public void SetBrickStateToExist(Vector2Int pos, Type type)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Exist, TetrisConfig.ActiveColor(type));
         }
@@ -121,16 +121,16 @@ namespace Puzzle.Tetris
         /// 設定Brick的佔用狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetBrickStateToOccupied(Vector2Int pos, Type type)
+        public void SetBrickStateToOccupied(Vector2Int pos, Type type)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, TetrisConfig.ActiveColor(type));
         }
-        public static void SetBrickStateToDead(Vector2Int pos, Color color)
+        public void SetBrickStateToDead(Vector2Int pos, Color color)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, color);
         }
 
-        public static void SetBrickStateToGhost(Vector2Int pos, Type type)
+        public void SetBrickStateToGhost(Vector2Int pos, Type type)
         {
             Board[pos.x, pos.y].ChangeState(Brick.State.Ghost, Color.black);
         }
@@ -141,7 +141,7 @@ namespace Puzzle.Tetris
         /// 設定NextUI的暫存狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetNextUIToExist(Vector2Int pos, Type type)
+        public void SetNextUIToExist(Vector2Int pos, Type type)
         {
             NextUI[pos.x, pos.y].ChangeState(Brick.State.Exist, TetrisConfig.ActiveColor(type));
         }
@@ -149,7 +149,7 @@ namespace Puzzle.Tetris
         /// 清除NextUI的暫存狀態
         /// </summary>
         /// <param name="pos">定位</param>
-        public static void SetNextUIToNone(Vector2Int pos)
+        public void SetNextUIToNone(Vector2Int pos)
         {
             NextUI[pos.x, pos.y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
         }
@@ -159,7 +159,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 確認磚塊連線消除
         /// </summary>
-        public static void CheckClearLines(Action<int> ClearRows)
+        public void CheckClearLines(Action<int> ClearRows)
         {
             int count = 0;
             for (int y = 0; y < TetrisConfig.BoardHeight;)
@@ -181,7 +181,7 @@ namespace Puzzle.Tetris
         /// </summary>
         /// <param name="y">Y橫排值</param>
         /// <returns>是否滿線</returns>
-        private static bool IsLineFull(int y)
+        private bool IsLineFull(int y)
         {
             for (int x = 0; x < TetrisConfig.BoardWidth; x++)
             {
@@ -193,7 +193,7 @@ namespace Puzzle.Tetris
         /// 清除特定Y橫排
         /// </summary>
         /// <param name="y">Y橫排值</param>
-        private static void ClearLine(int y)
+        private void ClearLine(int y)
         {
             for (int x = 0; x < TetrisConfig.BoardWidth; x++)
             {
@@ -204,7 +204,7 @@ namespace Puzzle.Tetris
         /// 從起始排Y以上磚塊資料下移
         /// </summary>
         /// <param name="startY">起始排Y值</param>
-        private static void ShiftRowsDown(int startY)
+        private void ShiftRowsDown(int startY)
         {
             for (int y = startY; y < TetrisConfig.BoardHeight - 1; y++)
             {//頂排不用做移動所以 -1
@@ -217,13 +217,4 @@ namespace Puzzle.Tetris
         }
         #endregion 消除邏輯
     }
-}
-
-namespace Puzzle.Match3
-{
-    public class GameData
-    {
-        //不同類型的遊戲後端資料
-    }
-
 }

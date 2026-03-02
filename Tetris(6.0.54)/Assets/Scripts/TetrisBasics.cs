@@ -188,11 +188,6 @@ namespace Puzzle.Tetris
         private bool IsGameOver => _isGameOver;
         #endregion 狀態數據
 
-        /// <summary>
-        /// 掃描線座標
-        /// </summary>
-        Vector2Int scanPos;
-
         #region 生命週期
         private void Start()
         {
@@ -257,6 +252,10 @@ namespace Puzzle.Tetris
         /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
+        /// <summary>
+        /// 掃描線座標
+        /// </summary>
+        private Vector2Int scanPos;
 
         /// <summary>
         /// 產生新方塊組
@@ -287,7 +286,7 @@ namespace Puzzle.Tetris
             //Lock
             _currentBrick.Lock();
             _currentBrick.UpdateBrickState();
-            GameData.CheckClearLines(ClearRows);
+            data.CheckClearLines(ClearRows);
             //NextDrop
             SpawnBrick();
             _isProcessing = false;
@@ -457,7 +456,7 @@ namespace Puzzle.Tetris
                 for (int x = 0; x < Width; x++)
                 {//Y相同的一橫排變死色
                     scanPos.x = x;
-                    GameData.SetBrickStateToDead(scanPos, brickDead);
+                    data.SetBrickStateToDead(scanPos, brickDead);
                 }
                 scanPos.y++;//跳至下一排
             }
