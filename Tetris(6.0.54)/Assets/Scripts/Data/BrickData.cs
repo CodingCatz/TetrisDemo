@@ -99,16 +99,17 @@ namespace Puzzle.Tetris
         #region 初始化
         private int W => TetrisConfig.BoardWidth;
         private int H => TetrisConfig.BoardHeight;
-
+        private GameData data;
         /// <summary>
         /// 設定初始狀態
         /// </summary>
         /// <param name="x">起始X</param>
         /// <param name="y">起始Y</param>
         /// <param name="type">形狀</param>
-        public void SetData(int x, int y, Type type)
+        public void SetData(GameData data, int x, int y, Type type)
         {
             isAlive = true;
+            this.data = data;
             this.x = x;
             this.y = y;
             this.type = type;
@@ -139,7 +140,7 @@ namespace Puzzle.Tetris
                 //重疊(上邊以內)
                 if (cell.y < H)
                 {
-                    if (GameData.GetBrickState(cell) == Brick.State.Occupied) return false;
+                    if (data.GetBrickState(cell) == Brick.State.Occupied) return false;
                 }
             }
             return true;
@@ -185,7 +186,7 @@ namespace Puzzle.Tetris
             foreach (Vector2Int cell in Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
-                GameData.SetBrickStateToNone(cell);
+                data.SetBrickStateToNone(cell);
             }
         }
         /// <summary>
@@ -196,7 +197,7 @@ namespace Puzzle.Tetris
             foreach (Vector2Int cell in GhostData.Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
-                GameData.SetBrickStateToNone(cell);
+                data.SetBrickStateToNone(cell);
             }
         }
         /// <summary>
@@ -219,11 +220,11 @@ namespace Puzzle.Tetris
                 if (cell.y >= H) continue;
                 if (isAlive)
                 {
-                    GameData.SetBrickStateToExist(cell, type);
+                    data.SetBrickStateToExist(cell, type);
                 }
                 else
                 {
-                    GameData.SetBrickStateToOccupied(cell, type);
+                    data.SetBrickStateToOccupied(cell, type);
                 }
             }
         }
@@ -235,7 +236,7 @@ namespace Puzzle.Tetris
             foreach(Vector2Int cell in GhostData.Cells)
             {//continue；略過超出範圍的cell
                 if (cell.y >= H) continue;
-                GameData.SetBrickStateToGhost(cell, type);
+                data.SetBrickStateToGhost(cell, type);
             }
         }
         #endregion 遊戲區視覺更新相關功能
@@ -248,7 +249,7 @@ namespace Puzzle.Tetris
         {
             foreach (Vector2Int cell in Cells)
             {
-                GameData.SetNextUIToNone(cell);
+                data.SetNextUIToNone(cell);
             }
         }
         /// <summary>
@@ -258,7 +259,7 @@ namespace Puzzle.Tetris
         {
             foreach (Vector2Int cell in Cells)
             {
-                GameData.SetNextUIToExist(cell, type);
+                data.SetNextUIToExist(cell, type);
             }
         }
         #endregion 預覽區視覺更新相關功能

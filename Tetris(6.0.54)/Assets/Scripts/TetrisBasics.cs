@@ -262,7 +262,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void SpawnBrick()
         {
-            _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
+            _currentBrick.SetData(data, SPAWN_X, SPAWN_Y, _nextBrick.type);
             RandomNextBrick();
             //滅頂邏輯
             if (!_currentBrick.IsValid())
@@ -308,7 +308,7 @@ namespace Puzzle.Tetris
         private void RandomNextBrick()
         {
             if (_isReady) _nextBrick.ClearNextBrick();
-            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
+            _nextBrick.SetData(data, NEXT_X, NEXT_Y, data.RandomType());
             _nextBrick.UpdateNextBrick();
         }
 
