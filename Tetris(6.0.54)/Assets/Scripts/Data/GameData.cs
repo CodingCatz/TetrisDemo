@@ -96,7 +96,7 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public void SetBrickStateToNone(Vector2Int pos)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
+            Board[pos.x, pos.y].ChangeStateToNone();
         }
         /// <summary>
         /// 清除Brick的佔用狀態
@@ -105,7 +105,7 @@ namespace Puzzle.Tetris
         /// <param name="y">座標Y</param>
         public void SetBrickStateToNone(int x, int y)
         {
-            Board[x, y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
+            Board[x, y].ChangeStateToNone();
         }
 
         /// <summary>

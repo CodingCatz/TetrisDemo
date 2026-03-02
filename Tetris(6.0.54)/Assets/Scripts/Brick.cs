@@ -85,6 +85,15 @@ namespace Puzzle.Tetris
             image.color = color;
         }
         /// <summary>
+        /// 清除狀態和重置顏色
+        /// </summary>
+        public void ChangeStateToNone()
+        {
+            state = State.None;
+            //更新磚塊視覺
+            image.color = Color.gray;
+        }
+        /// <summary>
         /// 切換磚塊的狀態(拷貝別的磚塊)
         /// </summary>
         /// <param name="brick">目標磚塊</param>

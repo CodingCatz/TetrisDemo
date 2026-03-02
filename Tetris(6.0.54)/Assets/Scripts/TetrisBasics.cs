@@ -159,10 +159,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private bool FastDownTrigger => downTimer >= MOVE_CD;
         /// <summary>
-        /// 當前操作中方塊組合是否存活
-        /// </summary>
-        private bool BrickAlive => _currentBrick.isAlive;
-        /// <summary>
         /// 遊戲速率(共10級)
         /// </summary>
         private int GameSpeed => M_SEC - (LV * 100);
