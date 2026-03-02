@@ -351,6 +351,20 @@ namespace Puzzle.Tetris
                 downTimer = 0;
             }
         }
+        /// <summary>
+        /// 各種可能的踢牆位移
+        /// </summary>
+        private readonly Vector2Int[] WALL_KICK_OFFSETS
+            = new Vector2Int[]
+        {
+            Vector2Int.zero,
+            Vector2Int.left,
+            Vector2Int.right,
+            Vector2Int.up,
+            Vector2Int.left * 2,
+            Vector2Int.right * 2,
+            Vector2Int.up * 2,
+        };
 
         /// <summary>
         /// 嘗試旋轉方塊組合
@@ -358,15 +372,25 @@ namespace Puzzle.Tetris
         private void TryRota()
         {
             BrickData tmp = _currentBrick;//影Brick
-            //模擬位移
+            //模擬旋轉
             tmp.Rota();
-            //不穿牆不卡磚
-            if (tmp.IsValid())
+            //踢牆偏移量遍歷(找到第一個合法位置)
+            foreach (Vector2Int offest in WALL_KICK_OFFSETS)
             {
-                _currentBrick.ClearBrickState();
-                _currentBrick = tmp;//套用影Brick
-                _currentBrick.UpdateBrickState();
+                BrickData tmpKick = tmp;//影tmpBrick
+                tmpKick.Move(offest);
+                //不穿牆不卡磚
+                if (tmpKick.IsValid())
+                {
+                    _currentBrick.ClearBrickState();
+                    _currentBrick = tmpKick;//套用影tmpBrick
+                    _currentBrick.UpdateBrickState();
+                    //觸底檢測
+                    CheckGrounded();//任何的移動都要檢查接下來是否撞擊
+                    break;
+                }
             }
+            
         }
 
         /// <summary>
