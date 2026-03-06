@@ -147,7 +147,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 左右(A/D)操作數值
         /// </summary>
-        private int MoveDir => Math.Sign(Input.GetAxis("Horizontal"));
+        private int MoveDir => moveAction != null ? Math.Sign(moveAction.action.ReadValue<float>()) : 0;
+        /// <summary>
+        /// 執行方塊組旋轉
+        /// </summary>
+        private bool RotaTrigger => rotaAction.action.IsPressed();
         /// <summary>
         /// 執行左右移動
         /// </summary>
@@ -163,7 +167,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 執行速降操作
         /// </summary>
-        private bool FastDown => Math.Sign(Input.GetAxis("Vertical")) < 0;
+        private bool FastDown => softDropAction.action.IsPressed();
+        /// <summary>
+        /// 執行瞬降操作
+        /// </summary>
+        private bool HardDown => hardDropAction.action.IsPressed();
         /// <summary>
         /// 快速下降是否可以被觸發
         /// </summary>
@@ -208,18 +216,6 @@ namespace Puzzle.Tetris
             if (IsCoreLock) return;
 
             MoveInput();
-
-            //旋轉
-            if (Input.GetKeyDown(KeyCode.W))
-            {
-                TryRota();
-            }
-
-            //瞬降(硬降)
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                HardDrop();
-            }
         }
         #endregion 生命週期
 
@@ -357,6 +353,12 @@ namespace Puzzle.Tetris
             {//放開S
                 downTimer = 0;
             }
+
+            //旋轉
+            if (RotaTrigger) TryRota();
+
+            //瞬降(硬降)
+            if (HardDown) HardDrop();
         }
 
         /// <summary>
