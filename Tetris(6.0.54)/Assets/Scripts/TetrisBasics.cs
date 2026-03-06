@@ -308,7 +308,7 @@ namespace Puzzle.Tetris
         {
             _isProcessing = true;
             //Lock
-            _currentBrick.Lock();
+            //_currentBrick.Lock();
             _currentBrick.UpdateBrickState();
             data.CheckClearLines(ClearRows);
             //NextDrop

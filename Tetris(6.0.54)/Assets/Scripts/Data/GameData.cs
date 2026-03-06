@@ -85,7 +85,7 @@ namespace Puzzle.Tetris
         /// </summary>
         /// <param name="pos">定位</param>
         /// <returns>磚塊的狀態</returns>
-        public Brick.State GetBrickState(Vector2Int pos)
+        public State GetBrickState(Vector2Int pos)
         {
             return Board[pos.x, pos.y].state;
         }
@@ -114,7 +114,7 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public void SetBrickStateToExist(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Exist, TetrisConfig.ActiveColor(type));
+            Board[pos.x, pos.y].ChangeState(State.Exist, TetrisConfig.ActiveColor(type));
         }
 
         /// <summary>
@@ -123,16 +123,16 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public void SetBrickStateToOccupied(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, TetrisConfig.ActiveColor(type));
+            Board[pos.x, pos.y].ChangeState(State.Occupied, TetrisConfig.ActiveColor(type));
         }
         public void SetBrickStateToDead(Vector2Int pos, Color color)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Occupied, color);
+            Board[pos.x, pos.y].ChangeState(State.Occupied, color);
         }
 
         public void SetBrickStateToGhost(Vector2Int pos, Type type)
         {
-            Board[pos.x, pos.y].ChangeState(Brick.State.Ghost, Color.black);
+            Board[pos.x, pos.y].ChangeState(State.Ghost, Color.black);
         }
         #endregion Brick狀態操作相關
 
@@ -143,7 +143,7 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public void SetNextUIToExist(Vector2Int pos, Type type)
         {
-            NextUI[pos.x, pos.y].ChangeState(Brick.State.Exist, TetrisConfig.ActiveColor(type));
+            NextUI[pos.x, pos.y].ChangeState(State.Exist, TetrisConfig.ActiveColor(type));
         }
         /// <summary>
         /// 清除NextUI的暫存狀態
@@ -151,7 +151,7 @@ namespace Puzzle.Tetris
         /// <param name="pos">定位</param>
         public void SetNextUIToNone(Vector2Int pos)
         {
-            NextUI[pos.x, pos.y].ChangeState(Brick.State.None, TetrisConfig.ActiveColor());
+            NextUI[pos.x, pos.y].ChangeState(State.None, TetrisConfig.ActiveColor());
         }
         #endregion NextUI狀態操作相關
 
@@ -185,7 +185,7 @@ namespace Puzzle.Tetris
         {
             for (int x = 0; x < TetrisConfig.BoardWidth; x++)
             {
-                if (Board[x, y].state != Brick.State.Occupied) return false;
+                if (Board[x, y].state != State.Occupied) return false;
             }
             return true;
         }

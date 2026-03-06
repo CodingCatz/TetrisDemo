@@ -45,15 +45,8 @@ namespace Puzzle.Tetris
         /// </summary>
         public int rotaIndex
         {
-            get
-            {
-                return _rotaIndex;
-            }
-            set
-            {//旋轉循環公式處裡掉 0~3 
-                if (value > 3) _rotaIndex = 0;
-                else _rotaIndex = value;
-            }
+            get => _rotaIndex;
+            set => _rotaIndex = value % 4;//四軸向取餘數
         }
         /// <summary>
         /// 當前操作中的對應座標組
@@ -108,7 +101,6 @@ namespace Puzzle.Tetris
         /// <param name="type">形狀</param>
         public void SetData(GameData data, int x, int y, Type type)
         {
-            isAlive = true;
             this.data = data;
             this.x = x;
             this.y = y;
@@ -118,14 +110,6 @@ namespace Puzzle.Tetris
         #endregion 初始化
 
         #region 移動旋轉相關功能
-        /// <summary>
-        /// 產生碰撞鎖定
-        /// </summary>
-        public void Lock()
-        {
-            isAlive = false;
-        }
-
         /// <summary>
         /// 檢查方塊是否處於合法位置
         /// </summary>
@@ -140,7 +124,7 @@ namespace Puzzle.Tetris
                 //重疊(上邊以內)
                 if (cell.y < H)
                 {
-                    if (data.GetBrickState(cell) == Brick.State.Occupied) return false;
+                    if (data.GetBrickState(cell) == State.Occupied) return false;
                 }
             }
             return true;

@@ -12,7 +12,64 @@ namespace Puzzle.Tetris
     {
         I, O, T, S, Z, L, J, None
     }
+    /// <summary>
+    /// [定義]Brick的基本狀態
+    /// </summary>
+    public enum State
+    {
+        /// <summary>
+        /// 無磚塊
+        /// </summary>
+        None,
+        /// <summary>
+        /// 有磚塊於此
+        /// </summary>
+        Exist,
+        /// <summary>
+        /// 磚塊佔據
+        /// </summary>
+        Occupied,
+        /// <summary>
+        /// 預判磚塊組鬼影
+        /// </summary>
+        Ghost
+    }
     #endregion ENUM列舉
+
+    #region STRUCT資料
+    /// <summary>
+    /// 磚塊細胞資料結構
+    /// </summary>
+    public struct CellData
+    {
+        /// <summary>
+        /// 磚塊細胞(最小單位)的狀態
+        /// </summary>
+        public State state;
+        /// <summary>
+        /// 磚塊細胞(最小單位)的所屬類型
+        /// </summary>
+        public Type type;
+        /// <summary>
+        /// 設定磚塊細胞數據
+        /// </summary>
+        /// <param name="state"></param>
+        /// <param name="type"></param>
+        public void SetData(State state, Type type)
+        {
+            this.state = state; 
+            this.type = type;
+        }
+        /// <summary>
+        /// 清除磚塊細胞數據
+        /// </summary>
+        public void Clear()
+        {
+            state = State.None;
+            type = Type.None;
+        }
+    }
+    #endregion STRUCT資料
 
     public static class TetrisConfig
     {

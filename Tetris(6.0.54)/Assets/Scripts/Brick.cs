@@ -8,31 +8,6 @@ namespace Puzzle.Tetris
     /// </summary>
     public class Brick : MonoBehaviour
     {
-        #region 定義
-        /// <summary>
-        /// [定義]Brick的基本狀態
-        /// </summary>
-        public enum State
-        {
-            /// <summary>
-            /// 無磚塊
-            /// </summary>
-            None, 
-            /// <summary>
-            /// 有磚塊於此
-            /// </summary>
-            Exist, 
-            /// <summary>
-            /// 磚塊佔據
-            /// </summary>
-            Occupied,
-            /// <summary>
-            /// 預判磚塊組鬼影
-            /// </summary>
-            Ghost
-        }
-        #endregion 定義
-
         #region 基礎元件
         private Image _image;
         private Image image
