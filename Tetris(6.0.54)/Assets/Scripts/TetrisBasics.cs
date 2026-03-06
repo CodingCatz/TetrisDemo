@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;//使用 XXXXXX命名空間
+using UnityEngine.InputSystem;//新式輸入系統
 
 //命名空間(程式資料夾的概念) 第一層名稱(.的)次一層名稱
 namespace Puzzle.Tetris
@@ -96,7 +97,16 @@ namespace Puzzle.Tetris
         private bool _isGameOver;
         #endregion 基礎資料
 
+        #region 輸入設置(支援多玩家設定解耦)
+        [Header("Input輸入設定")]
+        public InputActionReference moveAction;//水平移動
+        public InputActionReference rotaAction;//順時針旋轉
+        public InputActionReference softDropAction;//加速下落
+        public InputActionReference hardDropAction;//瞬間下落
+        #endregion 輸入設置(支援多玩家設定解耦)
+
         #region 遊戲核心介面
+        [Header("UI物件設定")]
         /// <summary>
         /// 磚塊模板物件
         /// </summary>

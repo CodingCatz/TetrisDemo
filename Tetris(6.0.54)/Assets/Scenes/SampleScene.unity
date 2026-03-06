@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 122612324}
   - component: {fileID: 122612323}
   m_Layer: 5
-  m_Name: '[Canvas] TetrisBasics (1)'
+  m_Name: '[Canvas] TetrisBasics (P2)'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -351,6 +351,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
+  moveAction: {fileID: 0}
+  rotaAction: {fileID: 0}
+  softDropAction: {fileID: 0}
+  hardDropAction: {fileID: 0}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 106954434}
   nextUI: {fileID: 84477672}
@@ -614,7 +618,7 @@ GameObject:
   - component: {fileID: 1171078203}
   - component: {fileID: 1171078207}
   m_Layer: 5
-  m_Name: '[Canvas] TetrisBasics'
+  m_Name: '[Canvas] TetrisBasics (P1)'
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -716,6 +720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
+  moveAction: {fileID: 0}
+  rotaAction: {fileID: 0}
+  softDropAction: {fileID: 0}
+  hardDropAction: {fileID: 0}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 1177812928}
   nextUI: {fileID: 1212882282}
