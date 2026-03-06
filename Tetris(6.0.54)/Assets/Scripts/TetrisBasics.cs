@@ -147,11 +147,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 左右(A/D)操作數值
         /// </summary>
-        private int MoveDir => moveAction != null ? Math.Sign(moveAction.action.ReadValue<float>()) : 0;
-        /// <summary>
-        /// 執行方塊組旋轉
-        /// </summary>
-        private bool RotaTrigger => rotaAction.action.IsPressed();
+        private int MoveDir => moveAction != null ? Math.Sign(moveAction.action.ReadValue<Vector2>().x) : 0;
         /// <summary>
         /// 執行左右移動
         /// </summary>
@@ -168,10 +164,6 @@ namespace Puzzle.Tetris
         /// 執行速降操作
         /// </summary>
         private bool FastDown => softDropAction.action.IsPressed();
-        /// <summary>
-        /// 執行瞬降操作
-        /// </summary>
-        private bool HardDown => hardDropAction.action.IsPressed();
         /// <summary>
         /// 快速下降是否可以被觸發
         /// </summary>
@@ -203,6 +195,38 @@ namespace Puzzle.Tetris
         #endregion 狀態數據
 
         #region 生命週期
+        private void OnEnable()
+        {
+            moveAction?.action.Enable();
+            softDropAction?.action.Enable();
+            if (rotaAction)
+            {
+                rotaAction.action.Enable();
+                rotaAction.action.performed += OnRota;
+            }
+            if (hardDropAction)
+            {
+                hardDropAction.action.Enable();
+                hardDropAction.action.performed += OnHardDrop;
+            }
+        }
+
+        private void OnDisable()
+        {
+            moveAction?.action.Disable();
+            softDropAction?.action.Disable();
+            if (rotaAction)
+            {
+                rotaAction.action.performed -= OnRota;
+                rotaAction.action.Disable();
+            }
+            if (hardDropAction)
+            {
+                hardDropAction.action.performed -= OnHardDrop;
+                hardDropAction.action.Disable();
+            }
+        }
+
         private void Start()
         {
             GameStart();
@@ -213,8 +237,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private void Update()
         {
-            if (IsCoreLock) return;
-
             MoveInput();
         }
         #endregion 生命週期
@@ -319,6 +341,8 @@ namespace Puzzle.Tetris
         /// </summary>
         private void MoveInput()
         {
+            if (IsCoreLock) return;
+
             if (LRMove)
             {//按下移動：A/D
                 if (MoveTrigger)
@@ -355,10 +379,28 @@ namespace Puzzle.Tetris
             }
 
             //旋轉
-            if (RotaTrigger) TryRota();
+            //if (RotaTrigger) TryRota();
 
             //瞬降(硬降)
-            if (HardDown) HardDrop();
+            //if (HardDown) HardDrop();
+        }
+        /// <summary>
+        /// Input觸發RotaAction用
+        /// </summary>
+        /// <param name="cxt">輸入訊號</param>
+        private void OnRota(InputAction.CallbackContext cxt)
+        {
+            if (IsCoreLock) return;
+            TryRota();
+        }
+        /// <summary>
+        /// Input觸發HardDropAction用
+        /// </summary>
+        /// <param name="cxt">輸入訊號</param>
+        private void OnHardDrop(InputAction.CallbackContext cxt)
+        {
+            if (IsCoreLock) return;
+            HardDrop();
         }
 
         /// <summary>

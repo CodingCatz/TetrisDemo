@@ -351,10 +351,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
-  moveAction: {fileID: 0}
-  rotaAction: {fileID: 0}
-  softDropAction: {fileID: 0}
-  hardDropAction: {fileID: 0}
+  moveAction: {fileID: -6691656391101781998, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  rotaAction: {fileID: 5155572976350980423, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  softDropAction: {fileID: -6638344279779222224, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  hardDropAction: {fileID: 936524062812099830, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 106954434}
   nextUI: {fileID: 84477672}
@@ -720,10 +720,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
-  moveAction: {fileID: 0}
-  rotaAction: {fileID: 0}
-  softDropAction: {fileID: 0}
-  hardDropAction: {fileID: 0}
+  moveAction: {fileID: 8210660778797621265, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  rotaAction: {fileID: -5325560922464655333, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  softDropAction: {fileID: -4148793521636453119, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  hardDropAction: {fileID: -7431868946280181428, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 1177812928}
   nextUI: {fileID: 1212882282}
