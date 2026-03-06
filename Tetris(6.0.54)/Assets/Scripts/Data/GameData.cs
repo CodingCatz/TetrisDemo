@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static UnityEngine.Analytics.IAnalytic;
 using Random = UnityEngine.Random;
 
 namespace Puzzle.Tetris
@@ -9,16 +10,24 @@ namespace Puzzle.Tetris
     public class GameData
     {
         #region 公開資訊接口
+        private int BoardWidth => TetrisConfig.BoardWidth;
+        private int BoardHeight => TetrisConfig.BoardWidth;
 
+        private int NextWidth => TetrisConfig.NextWidth;
+        private int NextHeight => TetrisConfig.NextWidth;
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
-        public Brick[,] Board { get; private set; }
+        public CellData[,] Board { get; private set; }
         
         /// <summary>
         /// 預覽區二維陣列
         /// </summary>
-        public Brick[,] NextUI { get; private set; }
+        public CellData[,] NextUI { get; private set; }
+        /// <summary>
+        /// 預覽區二維陣列
+        /// </summary>
+        public CellData[,] HoldUI { get; private set; }
         #endregion 公開資訊接口
 
         #region 建構式
@@ -27,8 +36,10 @@ namespace Puzzle.Tetris
         /// </summary>
         public GameData()
         {
-            Board = new Brick[TetrisConfig.BoardWidth, TetrisConfig.BoardHeight];
-            NextUI = new Brick[TetrisConfig.NextWidth, TetrisConfig.NextHeight];
+            Board = new CellData[BoardWidth, BoardHeight];
+            NextUI = new CellData[NextWidth, NextHeight];
+            HoldUI = new CellData[NextWidth, NextHeight];
+            ClearAllData();
         }
 
         /// <summary>
@@ -38,37 +49,49 @@ namespace Puzzle.Tetris
         /// <param name="height">高</param>
         public GameData(int width, int height)
         {
-            Board = new Brick[width, height];
-            NextUI = new Brick[TetrisConfig.NextWidth, TetrisConfig.NextHeight];
+            Board = new CellData[width, height];
+            NextUI = new CellData[NextWidth, NextHeight];
+            HoldUI = new CellData[NextWidth, NextHeight];
+            ClearAllData();
+        }
+        /// <summary>
+        /// 刷新界面前的資料清理
+        /// </summary>
+        private void ClearAllData()
+        {
+            //清除面板UI
+            for (int x = 0; x < BoardWidth; x++) 
+                for (int y = 0; y < BoardHeight; y++)
+                    Board[x, y].Clear();
+            //清除預覽UI
+            for (int x = 0; x < NextWidth; x++)
+                for (int y = 0; y < NextHeight; y++)
+                    NextUI[x, y].Clear();
+            //清除保留UI
+            for (int x = 0; x < NextWidth; x++)
+                for (int y = 0; y < NextHeight; y++)
+                    HoldUI[x, y].Clear();
         }
         #endregion 建構式
-
-        #region 初始化遊戲資料
         /// <summary>
-        /// 設定(建立)棋盤格上的磚
+        /// 檢查方塊是否處於合法位置
         /// </summary>
-        /// <param name="x">座標X</param>
-        /// <param name="y">座標Y</param>
-        /// <param name="brick">磚塊實體</param>
-        public void SetBrick(int x, int y, Brick brick)
+        /// <returns>是否處於合法位置</returns>
+        public bool IsValid(BrickData brickData)
         {
-            Board[x, y] = brick;
-            //為了辨識容易將每個Brick依座標命名
-            brick.Initial($"Brick({x},{y})");
+            foreach (var cell in brickData.Cells)
+            {
+                //出界(左、下、右邊)超出
+                if (cell.x < 0 || cell.y < 0 || cell.x >= BoardWidth)
+                    return false;
+                //重疊(上邊以內)
+                if (cell.y < BoardHeight)
+                {
+                    if (GetBrickState(cell) == State.Occupied) return false;
+                }
+            }
+            return true;
         }
-        /// <summary>
-        /// 設定(建立)棋盤格上的磚
-        /// </summary>
-        /// <param name="x">座標X</param>
-        /// <param name="y">座標Y</param>
-        /// <param name="brick">磚塊實體</param>
-        public void SetNextUI(int x, int y, Brick brick)
-        {
-            NextUI[x, y] = brick;
-            //為了辨識容易將每個Brick依座標命名
-            brick.Initial($"Brick({x},{y})");
-        }
-        #endregion 初始化遊戲資料
 
         #region Brick狀態操作相關
         /// <summary>
@@ -92,7 +115,7 @@ namespace Puzzle.Tetris
 
         /// <summary>
         /// 清除Brick的佔用狀態
-        /// </summary>
+        /// </summary>F
         /// <param name="pos">定位</param>
         public void SetBrickStateToNone(Vector2Int pos)
         {

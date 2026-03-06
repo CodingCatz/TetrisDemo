@@ -92,16 +92,15 @@ namespace Puzzle.Tetris
         #region 初始化
         private int W => TetrisConfig.BoardWidth;
         private int H => TetrisConfig.BoardHeight;
-        private GameData data;
+
         /// <summary>
         /// 設定初始狀態
         /// </summary>
         /// <param name="x">起始X</param>
         /// <param name="y">起始Y</param>
         /// <param name="type">形狀</param>
-        public void SetData(GameData data, int x, int y, Type type)
+        public void SetData(int x, int y, Type type)
         {
-            this.data = data;
             this.x = x;
             this.y = y;
             this.type = type;
@@ -110,25 +109,6 @@ namespace Puzzle.Tetris
         #endregion 初始化
 
         #region 移動旋轉相關功能
-        /// <summary>
-        /// 檢查方塊是否處於合法位置
-        /// </summary>
-        /// <returns>是否處於合法位置</returns>
-        public bool IsValid()
-        {
-            foreach (var cell in Cells)
-            {
-                //出界(左、下、右邊)超出
-                if (cell.x < 0 || cell.y < 0 || cell.x >= W)
-                    return false;
-                //重疊(上邊以內)
-                if (cell.y < H)
-                {
-                    if (data.GetBrickState(cell) == State.Occupied) return false;
-                }
-            }
-            return true;
-        }
 
         /// <summary>
         /// 移動1個單位
@@ -151,7 +131,7 @@ namespace Puzzle.Tetris
             rotaIndex++;
         }
         #endregion 移動旋轉相關功能
-
+        /*
         #region 遊戲區視覺更新相關功能
         /// <summary>
         /// 清除磚塊組合狀態
@@ -247,5 +227,6 @@ namespace Puzzle.Tetris
             }
         }
         #endregion 預覽區視覺更新相關功能
+        */
     }
 }

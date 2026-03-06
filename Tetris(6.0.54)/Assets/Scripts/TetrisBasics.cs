@@ -123,6 +123,21 @@ namespace Puzzle.Tetris
         /// 磚塊陣亡
         /// </summary>
         public Color brickDead;
+
+        /// <summary>
+        /// 遊戲棋盤二維陣列(複數集合物件)
+        /// </summary>
+        private Brick[,] _boardBricks;
+
+        /// <summary>
+        /// 預覽區二維陣列
+        /// </summary>
+        private Brick[,] _nextBricks;
+
+        /// <summary>
+        /// 保留區二維陣列
+        /// </summary>
+        private Brick[,] _holdBricks;
         #endregion 遊戲核心介面
 
         #region 狀態數據
@@ -286,10 +301,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private void SpawnBrick()
         {
-            _currentBrick.SetData(data, SPAWN_X, SPAWN_Y, _nextBrick.type);
+            _currentBrick.SetData(SPAWN_X, SPAWN_Y, _nextBrick.type);
             RandomNextBrick();
             //滅頂邏輯
-            if (!_currentBrick.IsValid())
+            if (!data.IsValid(_currentBrick))
             {
                 _isGameOver = true;
             }
@@ -332,7 +347,7 @@ namespace Puzzle.Tetris
         private void RandomNextBrick()
         {
             if (_isReady) _nextBrick.ClearNextBrick();
-            _nextBrick.SetData(data, NEXT_X, NEXT_Y, data.RandomType());
+            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
             _nextBrick.UpdateNextBrick();
         }
 
@@ -417,7 +432,7 @@ namespace Puzzle.Tetris
                 BrickData tmpKick = tmp;//影tmpBrick
                 tmpKick.Move(offest);
                 //不穿牆不卡磚
-                if (tmpKick.IsValid())
+                if (data.IsValid(tmpKick))
                 {
                     _currentBrick.ClearBrickState();
                     _currentBrick = tmpKick;//套用影tmpBrick
@@ -440,7 +455,7 @@ namespace Puzzle.Tetris
             //模擬位移
             tmp.Move(offset);
             //不穿牆不卡磚
-            if (tmp.IsValid())
+            if (data.IsValid(tmp))
             {
                 _currentBrick.ClearBrickState();
                 _currentBrick = tmp;//套用影Brick
@@ -485,7 +500,7 @@ namespace Puzzle.Tetris
         {
             BrickData tmp = _currentBrick;//影Brick
             tmp.Move(Vector2Int.down);//模擬下落
-            if (tmp.IsValid())
+            if (data.IsValid(tmp))
             {//不穿牆不卡磚
                 _isGrounded = false;
             }
@@ -536,31 +551,47 @@ namespace Puzzle.Tetris
         /// </summary>
         private async Task InitialGame(CancellationToken token)
         {
+            _boardBricks = new Brick[Width, Height];
+            _nextBricks = new Brick[NextWidth, NextHeight];
+            _holdBricks = new Brick[NextWidth, NextHeight];
+
             //準備預覽UI
             for (int y = 0; y < NextHeight; y++)
             {//巢狀迴圈：3 * 4 次
                 for (int x = 0; x < NextWidth; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
-                    data.SetNextUI(x, y, Instantiate(brickTMP, nextUI));
+                    _nextBricks[x, y] = Instantiate(brickTMP, nextUI);
+                    _nextBricks[x, y].Initial($"Brick({x},{y})");
                 }
             }
-            //下一組磚塊資料
-            RandomNextBrick();
+            //準備保留UI
+            for (int y = 0; y < NextHeight; y++)
+            {//巢狀迴圈：3 * 4 次
+                for (int x = 0; x < NextWidth; x++)
+                {
+                    //棋盤[指定的座標] = 具現化物件到特定目標
+                    _holdBricks[x, y] = Instantiate(brickTMP, nextUI);
+                    _holdBricks[x, y].Initial($"Brick({x},{y})");
+                }
+            }
 
-            //FOR迴圈：起始值;終點值;迭代值;
+            //準備棋盤UI
             for (int y = 0; y < Height; y++)
             {//巢狀迴圈：10 * 20 次
                 for (int x = 0; x < Width; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
-                    data.SetBrick(x, y, Instantiate(brickTMP, boardUI));
+                    _boardBricks[x, y] = Instantiate(brickTMP, boardUI);
+                    _boardBricks[x, y].Initial($"Brick({x},{y})");
                     await Task.Yield();
                 }
             }
             _score = 0;
             _isGameOver = false;
             _isReady = true;
+            
+            RandomNextBrick();//下一組磚塊資料
             SpawnBrick();//產生第一塊磚
         }
 
@@ -610,5 +641,19 @@ namespace Puzzle.Tetris
             _CTS = null;
         }
         #endregion 遊戲流程控制
+
+        #region 畫面渲染(更新UI)
+        /// <summary>
+        /// 刷新全部界面
+        /// </summary>
+        private void UpdateUI()
+        {
+            if (!_isReady) return;
+            //1.刷新Board
+            //2.刷新預覽
+            //3.刷新保留
+            //4.刷新落點投影
+        }
+        #endregion 畫面渲染(更新UI)
     }
 }

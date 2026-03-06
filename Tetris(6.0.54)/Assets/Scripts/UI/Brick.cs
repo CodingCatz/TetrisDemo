@@ -4,7 +4,7 @@ using UnityEngine.UI;
 namespace Puzzle.Tetris
 {
     /// <summary>
-    /// 磚塊單元物件，包含資料&介面
+    /// 磚塊單元物件(顯示介面)
     /// </summary>
     public class Brick : MonoBehaviour
     {
