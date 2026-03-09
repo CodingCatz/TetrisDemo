@@ -8,10 +8,10 @@ namespace Puzzle.Tetris
     {
         #region 公開資訊接口
         private int BoardWidth => TetrisConfig.BoardWidth;
-        private int BoardHeight => TetrisConfig.BoardWidth;
+        private int BoardHeight => TetrisConfig.BoardHeight;
 
         private int NextWidth => TetrisConfig.NextWidth;
-        private int NextHeight => TetrisConfig.NextWidth;
+        private int NextHeight => TetrisConfig.BoardHeight;
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
@@ -144,72 +144,9 @@ namespace Puzzle.Tetris
         {
             return Board[pos.x, pos.y].state;
         }
-        /*
-        /// <summary>
-        /// 清除Brick的佔用狀態
-        /// </summary>F
-        /// <param name="pos">定位</param>
-        public void SetBrickStateToNone(Vector2Int pos)
-        {
-            Board[pos.x, pos.y].ChangeStateToNone();
-        }
-        /// <summary>
-        /// 清除Brick的佔用狀態
-        /// </summary>
-        /// <param name="x">座標X</param>
-        /// <param name="y">座標Y</param>
-        public void SetBrickStateToNone(int x, int y)
-        {
-            Board[x, y].ChangeStateToNone();
-        }
 
-        /// <summary>
-        /// 設定Brick的暫存狀態
-        /// </summary>
-        /// <param name="pos">定位</param>
-        public void SetBrickStateToExist(Vector2Int pos, Type type)
-        {
-            Board[pos.x, pos.y].ChangeState(State.Exist, TetrisConfig.ActiveColor(type));
-        }
-
-        /// <summary>
-        /// 設定Brick的佔用狀態
-        /// </summary>
-        /// <param name="pos">定位</param>
-        public void SetBrickStateToOccupied(Vector2Int pos, Type type)
-        {
-            Board[pos.x, pos.y].ChangeState(State.Occupied, TetrisConfig.ActiveColor(type));
-        }
-        public void SetBrickStateToDead(Vector2Int pos, Color color)
-        {
-            Board[pos.x, pos.y].ChangeState(State.Occupied, color);
-        }
-
-        public void SetBrickStateToGhost(Vector2Int pos, Type type)
-        {
-            Board[pos.x, pos.y].ChangeState(State.Ghost, Color.black);
-        }*/
         #endregion Brick狀態操作相關
-        /*
-        #region NextUI狀態操作相關
-        /// <summary>
-        /// 設定NextUI的暫存狀態
-        /// </summary>
-        /// <param name="pos">定位</param>
-        public void SetNextUIToExist(Vector2Int pos, Type type)
-        {
-            NextUI[pos.x, pos.y].ChangeState(State.Exist, TetrisConfig.ActiveColor(type));
-        }
-        /// <summary>
-        /// 清除NextUI的暫存狀態
-        /// </summary>
-        /// <param name="pos">定位</param>
-        public void SetNextUIToNone(Vector2Int pos)
-        {
-            NextUI[pos.x, pos.y].ChangeState(State.None, TetrisConfig.ActiveColor());
-        }
-        #endregion NextUI狀態操作相關
-        */
+
         #region 消除邏輯
         /// <summary>
         /// 確認磚塊連線消除

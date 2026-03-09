@@ -350,7 +350,6 @@ namespace Puzzle.Tetris
         /// </summary>
         private void RandomNextBrick()
         {
-            if (_isReady) 
             _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
         }
 
@@ -575,9 +574,9 @@ namespace Puzzle.Tetris
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     _boardBricks[x, y] = Instantiate(brickTMP, boardUI);
                     _boardBricks[x, y].Initial($"Brick({x},{y})");
-                    await Task.Yield();
                 }
             }
+            await Task.Yield();
             _score = 0;
             _isGameOver = false;
             _isReady = true;
@@ -641,20 +640,20 @@ namespace Puzzle.Tetris
         {
             if (!_isReady) return;
             //1.刷新Board
-            for (int x = 0; x < Width; x++)
-                for (int y = 0; y < Height; y++)
+            for (int y = 0; y < Height; y++)
+                for (int x = 0; x < Width; x++)
                 {
                     _boardBricks[x, y].ChangeState(data.GetBoradCell(x, y));
                 }
             //2.刷新預覽
-            for (int x = 0; x < NextWidth; x++)
-                for (int y = 0; y < NextHeight; y++)
+            for (int y = 0; y < NextHeight; y++) 
+                for (int x = 0; x < NextWidth; x++)
                 {
                     _nextBricks[x, y].ChangeState(data.GetNextUICell(x, y));
                 }
             //3.刷新保留
-            for (int x = 0; x < NextWidth; x++)
-                for (int y = 0; y < NextHeight; y++)
+            for (int y = 0; y < NextHeight; y++) 
+                for (int x = 0; x < NextWidth; x++)
                 {
                     _holdBricks[x, y].ChangeState(data.GetHoldUICell(x, y));
                 }
