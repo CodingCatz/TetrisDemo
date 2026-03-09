@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
-using static UnityEngine.Analytics.IAnalytic;
 using Random = UnityEngine.Random;
 
 namespace Puzzle.Tetris
@@ -18,8 +15,17 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
-        public CellData[,] Board { get; private set; }
-        
+        private CellData[,] Board;
+        /// <summary>
+        /// 取得遊戲棋盤單一細胞磚塊資料
+        /// </summary>
+        /// <param name="x">X</param>
+        /// <param name="y">Y</param>
+        /// <returns>單一細胞磚塊資料</returns>
+        public CellData GetBoradCell(int x, int y)
+        {
+            return Board[x, y];
+        }
         /// <summary>
         /// 預覽區二維陣列
         /// </summary>
@@ -89,7 +95,7 @@ namespace Puzzle.Tetris
         /// </summary>
         /// <param name="orgBrick">當前磚塊組原始資料</param>
         /// <returns>著陸點的虛擬磚塊組</returns>
-        private BrickData GetBrickShadow(BrickData brickData)
+        public BrickData GetBrickShadow(BrickData brickData)
         {
             BrickData tmp = brickData;//影Brick
             do

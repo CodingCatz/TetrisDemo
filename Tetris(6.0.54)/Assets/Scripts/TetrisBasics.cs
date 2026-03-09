@@ -248,11 +248,18 @@ namespace Puzzle.Tetris
         }
 
         /// <summary>
-        /// 執行玩家操作偵測
+        /// [資料更新]執行玩家操作偵測
         /// </summary>
         private void Update()
         {
             MoveInput();
+        }
+        /// <summary>
+        /// [視覺更新]確保每幀最後才運行
+        /// </summary>
+        private void LateUpdate()
+        {
+            UpdateUI();
         }
         #endregion 生命週期
 
@@ -310,7 +317,6 @@ namespace Puzzle.Tetris
             }
             else
             {
-                _currentBrick.UpdateBrickState();
                 CheckGrounded();
                 ResetDropTimer();
             }
@@ -322,9 +328,6 @@ namespace Puzzle.Tetris
         private void LockNextDrop()
         {
             _isProcessing = true;
-            //Lock
-            //_currentBrick.Lock();
-            _currentBrick.UpdateBrickState();
             data.CheckClearLines(ClearRows);
             //NextDrop
             SpawnBrick();
@@ -346,9 +349,8 @@ namespace Puzzle.Tetris
         /// </summary>
         private void RandomNextBrick()
         {
-            if (_isReady) _nextBrick.ClearNextBrick();
+            if (_isReady) 
             _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
-            _nextBrick.UpdateNextBrick();
         }
 
         /// <summary>
@@ -392,12 +394,6 @@ namespace Puzzle.Tetris
             {//放開S
                 downTimer = 0;
             }
-
-            //旋轉
-            //if (RotaTrigger) TryRota();
-
-            //瞬降(硬降)
-            //if (HardDown) HardDrop();
         }
         /// <summary>
         /// Input觸發RotaAction用
@@ -434,9 +430,7 @@ namespace Puzzle.Tetris
                 //不穿牆不卡磚
                 if (data.IsValid(tmpKick))
                 {
-                    _currentBrick.ClearBrickState();
                     _currentBrick = tmpKick;//套用影tmpBrick
-                    _currentBrick.UpdateBrickState();
                     //觸底檢測
                     CheckGrounded();//任何的移動都要檢查接下來是否撞擊
                     break;
@@ -457,9 +451,7 @@ namespace Puzzle.Tetris
             //不穿牆不卡磚
             if (data.IsValid(tmp))
             {
-                _currentBrick.ClearBrickState();
                 _currentBrick = tmp;//套用影Brick
-                _currentBrick.UpdateBrickState();
                 CheckGrounded();//任何的移動都要檢查接下來是否撞擊
                 return true;
             }
@@ -485,9 +477,8 @@ namespace Puzzle.Tetris
         private void HardDrop()
         {
             _isProcessing = true;//上鎖
-            //硬降過程
-            _currentBrick.ClearBrickState();//清除舊視覺
-            _currentBrick = _currentBrick.GhostData;//落點偵測
+            //磚塊組=落點
+            _currentBrick = data.GetBrickShadow(_currentBrick);
             LockNextDrop();
 
             _isProcessing = false;//解鎖
@@ -518,10 +509,9 @@ namespace Puzzle.Tetris
         {
             if (scanPos.y < Height)
             {//掃描線從最底往上淹沒
-                for (int x = 0; x < Width; x++)
+                for (scanPos.x = 0; scanPos.x < Width; scanPos.x++)
                 {//Y相同的一橫排變死色
-                    scanPos.x = x;
-                    data.SetBrickStateToDead(scanPos, brickDead);
+                    _boardBricks[scanPos.x, scanPos.y].ChangeState(State.Occupied, brickDead);
                 }
                 scanPos.y++;//跳至下一排
             }

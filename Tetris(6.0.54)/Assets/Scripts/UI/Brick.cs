@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using static UnityEngine.Analytics.IAnalytic;
 
 namespace Puzzle.Tetris
 {
@@ -30,13 +31,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// [唯讀]Brick的顏色
         /// </summary>
-        public Color color
-        {
-            get
-            {
-                return image.color;
-            }
-        }
+        public Color color { get; private set; }
 
         /// <summary>
         /// 初始化
@@ -45,37 +40,20 @@ namespace Puzzle.Tetris
         public void Initial(string name)
         {
             this.name = name;
-            ChangeState(State.None, TetrisConfig.ActiveColor());
+            state = State.None;
+            color = Type.None.ActiveColor();
         }
 
         /// <summary>
         /// 切換磚塊狀態
         /// </summary>
         /// <param name="state">要切換的狀態</param>
-        public void ChangeState(State state, Color color)
+        public void ChangeState(CellData data)
         {
-            this.state = state;
-            color.a = state == State.Ghost ? 0.6f : 1f;
+            state = data.state;
+            color = data.color;
             //更新磚塊視覺
             image.color = color;
-        }
-        /// <summary>
-        /// 清除狀態和重置顏色
-        /// </summary>
-        public void ChangeStateToNone()
-        {
-            state = State.None;
-            //更新磚塊視覺
-            image.color = Color.gray;
-        }
-        /// <summary>
-        /// 切換磚塊的狀態(拷貝別的磚塊)
-        /// </summary>
-        /// <param name="brick">目標磚塊</param>
-        public void ChangeState(Brick brick)
-        {
-            state = brick.state;
-            image.color = brick.color;
         }
     }
 }

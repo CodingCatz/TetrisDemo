@@ -109,37 +109,6 @@ namespace Puzzle.Tetris
         /*
         #region 遊戲區視覺更新相關功能
         /// <summary>
-        /// 清除磚塊組合狀態
-        /// </summary>
-        public void ClearBrickState()
-        {
-            //優先清除鬼影磚塊組
-            ClearGhostBrickState();
-            ClaerEntityBrickState();
-        }
-        /// <summary>
-        /// 清除實體磚塊組合狀態
-        /// </summary>
-        public void ClaerEntityBrickState()
-        {
-            foreach (Vector2Int cell in Cells)
-            {//continue；略過超出範圍的cell
-                if (cell.y >= H) continue;
-                data.SetBrickStateToNone(cell);
-            }
-        }
-        /// <summary>
-        /// 清除鬼影磚塊組狀態
-        /// </summary>
-        public void ClearGhostBrickState()
-        {
-            foreach (Vector2Int cell in GhostData.Cells)
-            {//continue；略過超出範圍的cell
-                if (cell.y >= H) continue;
-                data.SetBrickStateToNone(cell);
-            }
-        }
-        /// <summary>
         /// 更新磚塊組合狀態
         /// </summary>
         /// <param name="cells">方塊組座標陣列</param>

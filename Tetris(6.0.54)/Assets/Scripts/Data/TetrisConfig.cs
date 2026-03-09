@@ -50,6 +50,8 @@ namespace Puzzle.Tetris
         /// 磚塊細胞(最小單位)的所屬類型
         /// </summary>
         public Type type;
+
+        public Color color => type.ActiveColor(state);
         /// <summary>
         /// 設定磚塊細胞數據
         /// </summary>
@@ -214,19 +216,30 @@ namespace Puzzle.Tetris
         }
 
         #region 擴充功能
-        public static Color ActiveColor(Type type = Type.None)
+        public static Color ActiveColor(this Type type, State state = State.None)
         {
+            Color color = Color.gray;
             switch (type)
             {
-                default: return Color.gray;
-                case Type.I: return Color.cyan;
-                case Type.O: return Color.blue;
-                case Type.T: return Color.blue + Color.red;
-                case Type.S: return Color.green;
-                case Type.Z: return Color.red;
-                case Type.L: return Color.yellow;
-                case Type.J: return Color.red + Color.yellow;
+                default: 
+                    color = Color.gray; break;
+                case Type.I: 
+                    color = Color.cyan; break;
+                case Type.O: 
+                    color = Color.blue; break;
+                case Type.T: 
+                    color = Color.blue + Color.red; break;
+                case Type.S: 
+                    color = Color.green; break;
+                case Type.Z: 
+                    color = Color.red; break;
+                case Type.L: 
+                    color = Color.yellow; break;
+                case Type.J: 
+                    color = Color.red + Color.yellow; break;
             }
+            color.a = state == State.Ghost ? 0.6f : 1f;
+            return color;
         }
         #endregion 擴充功能
     }
