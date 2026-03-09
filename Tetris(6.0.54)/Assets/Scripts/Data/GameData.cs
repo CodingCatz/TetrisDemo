@@ -136,6 +136,15 @@ namespace Puzzle.Tetris
         }
 
         /// <summary>
+        /// 磚塊組撞擊鎖定
+        /// </summary>
+        /// <param name="brickData"></param>
+        public void ImpactLock(BrickData brickData)
+        {
+
+        }
+
+        /// <summary>
         /// 取得特定位置磚塊的狀態
         /// </summary>
         /// <param name="pos">定位</param>

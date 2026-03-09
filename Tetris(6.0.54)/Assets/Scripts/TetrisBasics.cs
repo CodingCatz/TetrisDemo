@@ -329,6 +329,7 @@ namespace Puzzle.Tetris
         private void LockNextDrop()
         {
             _isProcessing = true;
+            data.ImpactLock(_currentBrick);
             data.CheckClearLines(ClearRows);
             //NextDrop
             SpawnBrick();
@@ -639,6 +640,7 @@ namespace Puzzle.Tetris
         private void UpdateUI()
         {
             if (!_isReady) return;
+
             //1.刷新Board
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
@@ -657,8 +659,16 @@ namespace Puzzle.Tetris
                 {
                     _holdBricks[x, y].ChangeState(data.GetHoldUICell(x, y));
                 }
-            //4.刷新落點投影
-
+            //4.刷新落下磚&投影
+            foreach (Vector2Int cell in _currentBrick.Cells)
+            {
+                if (cell.y >= 0 && cell.y < Height && cell.x >= 0 && cell.x < Width)
+                {
+                    CellData workData = new CellData();
+                    workData.SetData(State.Exist, _currentBrick.type);
+                    _boardBricks[cell.x, cell.y].ChangeState(workData);
+                }
+            }
         }
         #endregion 畫面渲染(更新UI)
     }

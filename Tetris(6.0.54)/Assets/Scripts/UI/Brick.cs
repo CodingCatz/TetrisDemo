@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using static UnityEngine.Analytics.IAnalytic;
 
 namespace Puzzle.Tetris
 {
