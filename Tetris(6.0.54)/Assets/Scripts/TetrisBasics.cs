@@ -119,10 +119,11 @@ namespace Puzzle.Tetris
         /// 磚塊預覽面板UI
         /// </summary>
         public Transform nextUI;
+
         /// <summary>
-        /// 磚塊陣亡
+        /// 磚塊預覽面板UI
         /// </summary>
-        public Color brickDead;
+        public Transform holdUI;
 
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
@@ -511,7 +512,7 @@ namespace Puzzle.Tetris
             {//掃描線從最底往上淹沒
                 for (scanPos.x = 0; scanPos.x < Width; scanPos.x++)
                 {//Y相同的一橫排變死色
-                    _boardBricks[scanPos.x, scanPos.y].ChangeState(State.Occupied, brickDead);
+                    _boardBricks[scanPos.x, scanPos.y].DeadLock();
                 }
                 scanPos.y++;//跳至下一排
             }
@@ -561,7 +562,7 @@ namespace Puzzle.Tetris
                 for (int x = 0; x < NextWidth; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
-                    _holdBricks[x, y] = Instantiate(brickTMP, nextUI);
+                    _holdBricks[x, y] = Instantiate(brickTMP, holdUI);
                     _holdBricks[x, y].Initial($"Brick({x},{y})");
                 }
             }
@@ -640,9 +641,25 @@ namespace Puzzle.Tetris
         {
             if (!_isReady) return;
             //1.刷新Board
+            for (int x = 0; x < Width; x++)
+                for (int y = 0; y < Height; y++)
+                {
+                    _boardBricks[x, y].ChangeState(data.GetBoradCell(x, y));
+                }
             //2.刷新預覽
+            for (int x = 0; x < NextWidth; x++)
+                for (int y = 0; y < NextHeight; y++)
+                {
+                    _nextBricks[x, y].ChangeState(data.GetNextUICell(x, y));
+                }
             //3.刷新保留
+            for (int x = 0; x < NextWidth; x++)
+                for (int y = 0; y < NextHeight; y++)
+                {
+                    _holdBricks[x, y].ChangeState(data.GetHoldUICell(x, y));
+                }
             //4.刷新落點投影
+
         }
         #endregion 畫面渲染(更新UI)
     }

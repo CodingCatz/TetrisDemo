@@ -32,7 +32,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 預判磚塊組鬼影
         /// </summary>
-        Ghost
+        Ghost,
+        /// <summary>
+        /// 死亡鎖定
+        /// </summary>
+        Dead
     }
     #endregion ENUM列舉
 
@@ -216,6 +220,12 @@ namespace Puzzle.Tetris
         }
 
         #region 擴充功能
+        /// <summary>
+        /// [擴充功能]BrickCell顏色控制
+        /// </summary>
+        /// <param name="type">類型</param>
+        /// <param name="state">狀態</param>
+        /// <returns>對應的顏色</returns>
         public static Color ActiveColor(this Type type, State state = State.None)
         {
             Color color = Color.gray;

@@ -29,11 +29,19 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 預覽區二維陣列
         /// </summary>
-        public CellData[,] NextUI { get; private set; }
+        private CellData[,] NextUI;
+        public CellData GetNextUICell(int x, int y)
+        {
+            return NextUI[x, y];
+        }
         /// <summary>
         /// 預覽區二維陣列
         /// </summary>
-        public CellData[,] HoldUI { get; private set; }
+        private CellData[,] HoldUI;
+        public CellData GetHoldUICell(int x, int y)
+        {
+            return HoldUI[x, y];
+        }
         #endregion 公開資訊接口
 
         #region 建構式
