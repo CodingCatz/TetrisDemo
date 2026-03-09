@@ -7,7 +7,7 @@ namespace Puzzle.Tetris
     /// </summary>
     public struct BrickData
     {
-        #region 操作屬性
+        #region 基本屬性
         /// <summary>
         /// 形狀類型
         /// </summary>
@@ -53,25 +53,6 @@ namespace Puzzle.Tetris
         /// </summary>
         public Vector2Int[] Cells => CalRota();
 
-        public BrickData GhostData => GetLanding();
-
-        /// <summary>
-        /// 當前磚塊組的垂直著陸點
-        /// </summary>
-        /// <param name="orgBrick">當前磚塊組原始資料</param>
-        /// <returns>著陸點的虛擬磚塊組</returns>
-        private BrickData GetLanding()
-        {
-            BrickData tmp = this;//影Brick
-            do
-            {//先模擬位移一次
-                tmp.Move(Vector2Int.down);
-            }//再判斷是否繼續循環 
-            while (tmp.IsValid());
-            tmp.Move(Vector2Int.up);//回彈處理
-            return tmp;
-        }
-
         private Vector2Int[] CalRota()
         {
             //讀取模板
@@ -83,16 +64,9 @@ namespace Puzzle.Tetris
             }
             return result;
         }
-        /// <summary>
-        /// 方塊組是否處於可活動狀態
-        /// </summary>
-        public bool isAlive { get; private set; }
-        #endregion 操作屬性
+        #endregion 基本屬性
 
         #region 初始化
-        private int W => TetrisConfig.BoardWidth;
-        private int H => TetrisConfig.BoardHeight;
-
         /// <summary>
         /// 設定初始狀態
         /// </summary>
@@ -131,6 +105,7 @@ namespace Puzzle.Tetris
             rotaIndex++;
         }
         #endregion 移動旋轉相關功能
+
         /*
         #region 遊戲區視覺更新相關功能
         /// <summary>
