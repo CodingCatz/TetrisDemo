@@ -153,11 +153,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 預覽區寬
         /// </summary>
-        private int NextWidth => TetrisConfig.NextWidth;
+        private int UIWidth => TetrisConfig.UIWidth;
         /// <summary>
         /// 預覽區高
         /// </summary>
-        private int NextHeight => TetrisConfig.NextHeight;
+        private int UIHeight => TetrisConfig.UIHeight;
 
         private Vector2Int[] WallKickOffests => TetrisConfig.WallKickOffests;
         /// <summary>
@@ -543,13 +543,13 @@ namespace Puzzle.Tetris
         private async Task InitialGame(CancellationToken token)
         {
             _boardBricks = new Brick[Width, Height];
-            _nextBricks = new Brick[NextWidth, NextHeight];
-            _holdBricks = new Brick[NextWidth, NextHeight];
+            _nextBricks = new Brick[UIWidth, UIHeight];
+            _holdBricks = new Brick[UIWidth, UIHeight];
 
             //準備預覽UI
-            for (int y = 0; y < NextHeight; y++)
+            for (int y = 0; y < UIHeight; y++)
             {//巢狀迴圈：3 * 4 次
-                for (int x = 0; x < NextWidth; x++)
+                for (int x = 0; x < UIWidth; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     _nextBricks[x, y] = Instantiate(brickTMP, nextUI);
@@ -557,9 +557,9 @@ namespace Puzzle.Tetris
                 }
             }
             //準備保留UI
-            for (int y = 0; y < NextHeight; y++)
+            for (int y = 0; y < UIHeight; y++)
             {//巢狀迴圈：3 * 4 次
-                for (int x = 0; x < NextWidth; x++)
+                for (int x = 0; x < UIWidth; x++)
                 {
                     //棋盤[指定的座標] = 具現化物件到特定目標
                     _holdBricks[x, y] = Instantiate(brickTMP, holdUI);
@@ -635,6 +635,11 @@ namespace Puzzle.Tetris
 
         #region 畫面渲染(更新UI)
         /// <summary>
+        /// 磚塊的投影(落點預測UI)
+        /// </summary>
+        private BrickData ghostData;
+
+        /// <summary>
         /// 刷新全部界面
         /// </summary>
         private void UpdateUI()
@@ -648,18 +653,44 @@ namespace Puzzle.Tetris
                     _boardBricks[x, y].ChangeState(data.GetBoradCell(x, y));
                 }
             //2.刷新預覽
-            for (int y = 0; y < NextHeight; y++) 
-                for (int x = 0; x < NextWidth; x++)
+            for (int y = 0; y < UIHeight; y++) 
+                for (int x = 0; x < UIWidth; x++)
                 {
                     _nextBricks[x, y].ChangeState(data.GetNextUICell(x, y));
                 }
             //3.刷新保留
-            for (int y = 0; y < NextHeight; y++) 
-                for (int x = 0; x < NextWidth; x++)
+            for (int y = 0; y < UIHeight; y++) 
+                for (int x = 0; x < UIWidth; x++)
                 {
                     _holdBricks[x, y].ChangeState(data.GetHoldUICell(x, y));
                 }
-            //4.刷新落下磚&投影
+            //4.刷新投影&落下磚
+            UpdateGhostBrick();
+            UpdateDropBrick();
+        }
+
+        /// <summary>
+        /// 更新落點磚塊鬼影
+        /// </summary>
+        void UpdateGhostBrick()
+        {
+            ghostData = data.GetBrickShadow(_currentBrick);
+            foreach (Vector2Int cell in ghostData.Cells)
+            {
+                if (cell.y >= 0 && cell.y < Height && cell.x >= 0 && cell.x < Width)
+                {
+                    CellData workData = new CellData();
+                    workData.SetData(State.Ghost, ghostData.type);
+                    _boardBricks[cell.x, cell.y].ChangeState(workData);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 更新下落中的磚塊
+        /// </summary>
+        void UpdateDropBrick()
+        {
             foreach (Vector2Int cell in _currentBrick.Cells)
             {
                 if (cell.y >= 0 && cell.y < Height && cell.x >= 0 && cell.x < Width)

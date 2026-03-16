@@ -10,8 +10,8 @@ namespace Puzzle.Tetris
         private int BoardWidth => TetrisConfig.BoardWidth;
         private int BoardHeight => TetrisConfig.BoardHeight;
 
-        private int NextWidth => TetrisConfig.NextWidth;
-        private int NextHeight => TetrisConfig.BoardHeight;
+        private int UIWidth => TetrisConfig.UIWidth;
+        private int UIHeight => TetrisConfig.UIHeight;
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
         /// </summary>
@@ -51,8 +51,8 @@ namespace Puzzle.Tetris
         public GameData()
         {
             Board = new CellData[BoardWidth, BoardHeight];
-            NextUI = new CellData[NextWidth, NextHeight];
-            HoldUI = new CellData[NextWidth, NextHeight];
+            NextUI = new CellData[UIWidth, UIHeight];
+            HoldUI = new CellData[UIWidth, UIHeight];
             ClearAllData();
         }
 
@@ -64,8 +64,8 @@ namespace Puzzle.Tetris
         public GameData(int width, int height)
         {
             Board = new CellData[width, height];
-            NextUI = new CellData[NextWidth, NextHeight];
-            HoldUI = new CellData[NextWidth, NextHeight];
+            NextUI = new CellData[UIWidth, UIHeight];
+            HoldUI = new CellData[UIWidth, UIHeight];
             ClearAllData();
         }
         /// <summary>
@@ -78,12 +78,12 @@ namespace Puzzle.Tetris
                 for (int y = 0; y < BoardHeight; y++)
                     Board[x, y].Clear();
             //清除預覽UI
-            for (int x = 0; x < NextWidth; x++)
-                for (int y = 0; y < NextHeight; y++)
+            for (int x = 0; x < UIWidth; x++)
+                for (int y = 0; y < UIHeight; y++)
                     NextUI[x, y].Clear();
             //清除保留UI
-            for (int x = 0; x < NextWidth; x++)
-                for (int y = 0; y < NextHeight; y++)
+            for (int x = 0; x < UIWidth; x++)
+                for (int y = 0; y < UIHeight; y++)
                     HoldUI[x, y].Clear();
         }
         #endregion 建構式
@@ -141,7 +141,13 @@ namespace Puzzle.Tetris
         /// <param name="brickData"></param>
         public void ImpactLock(BrickData brickData)
         {
-
+            foreach (Vector2Int cell in brickData.Cells)
+            {
+                if (cell.y >= 0 && cell.y < BoardHeight && cell.x >= 0 && cell.x < BoardWidth)
+                {
+                    Board[cell.x, cell.y].SetData(State.Occupied, brickData.type);
+                }
+            }
         }
 
         /// <summary>

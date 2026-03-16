@@ -91,11 +91,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 預覽區寬
         /// </summary>
-        public const int NextWidth = 3;
+        public const int UIWidth = 3;
         /// <summary>
         /// 域覽區高
         /// </summary>
-        public const int NextHeight = 4;
+        public const int UIHeight = 4;
         #endregion 常數
 
         /// <summary>
@@ -248,7 +248,7 @@ namespace Puzzle.Tetris
                 case Type.J: 
                     color = Color.red + Color.yellow; break;
             }
-            color.a = state == State.Ghost ? 0.6f : 1f;
+            color.a = state == State.Ghost ? 0.2f : 1f;
             return color;
         }
         #endregion 擴充功能
