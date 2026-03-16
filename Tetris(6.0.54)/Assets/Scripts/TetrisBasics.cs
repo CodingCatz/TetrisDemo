@@ -95,6 +95,10 @@ namespace Puzzle.Tetris
         /// 狀態鎖：遊戲是否結束
         /// </summary>
         private bool _isGameOver;
+        /// <summary>
+        /// 計分鎖：分數是否已送出
+        /// </summary>
+        private bool _isScoreSubmit;
         #endregion 基礎資料
 
         #region 輸入設置(支援多玩家設定解耦)
@@ -358,8 +362,17 @@ namespace Puzzle.Tetris
         /// <param name="rows">清除行數</param>
         private void ClearRows(int rows)
         {
+            if (rows <= 0) return;
             _clearRows += rows;
             if (LV < _level) LV = _level;
+            //計分
+            switch (rows)
+            {
+                case 1: _score += 100; break;
+                case 2: _score += 300; break;
+                case 3: _score += 500; break;
+                case 4: _score += 800; break;
+            }
         }
 
         /// <summary>
@@ -622,6 +635,7 @@ namespace Puzzle.Tetris
             await Task.Yield();
             _score = 0;
             _isGameOver = false;
+            _isScoreSubmit = false;
             _isReady = true;
             
             RandomNextBrick();//下一組磚塊資料
@@ -640,6 +654,11 @@ namespace Puzzle.Tetris
 
                 if (IsGameOver)
                 {
+                    if (!_isScoreSubmit)
+                    {
+                        _isScoreSubmit = true;
+                        ScoreManager.SubmitScore(_score);
+                    }
                     DieOut();
                     await Task.Delay(M_SEC / Height, token);
                     continue;//省略後續檢測
