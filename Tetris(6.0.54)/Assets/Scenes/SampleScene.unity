@@ -455,6 +455,7 @@ MonoBehaviour:
   rotaAction: {fileID: 5155572976350980423, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -6638344279779222224, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   hardDropAction: {fileID: 936524062812099830, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  holdAction: {fileID: 1460273033349255331, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 106954434}
   nextUI: {fileID: 84477672}
@@ -926,6 +927,7 @@ MonoBehaviour:
   rotaAction: {fileID: -5325560922464655333, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -4148793521636453119, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   hardDropAction: {fileID: -7431868946280181428, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
+  holdAction: {fileID: -6589315504952161016, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   brickTMP: {fileID: 8807850558486943803, guid: a22aba684d8434c42b694e64e657daff, type: 3}
   boardUI: {fileID: 1177812928}
   nextUI: {fileID: 1212882282}

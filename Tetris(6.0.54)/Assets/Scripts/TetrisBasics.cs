@@ -103,6 +103,7 @@ namespace Puzzle.Tetris
         public InputActionReference rotaAction;//順時針旋轉
         public InputActionReference softDropAction;//加速下落
         public InputActionReference hardDropAction;//瞬間下落
+        public InputActionReference holdAction;//保留
         #endregion 輸入設置(支援多玩家設定解耦)
 
         #region 遊戲核心介面
@@ -225,6 +226,11 @@ namespace Puzzle.Tetris
                 hardDropAction.action.Enable();
                 hardDropAction.action.performed += OnHardDrop;
             }
+            if (holdAction)
+            {
+                holdAction.action.Enable();
+                holdAction.action.performed += OnHold;
+            }
         }
 
         private void OnDisable()
@@ -240,6 +246,11 @@ namespace Puzzle.Tetris
             {
                 hardDropAction.action.performed -= OnHardDrop;
                 hardDropAction.action.Disable();
+            }
+            if (holdAction)
+            {
+                holdAction.action.performed -= OnHold;
+                holdAction.action.Disable();
             }
         }
 
@@ -276,11 +287,11 @@ namespace Puzzle.Tetris
         /// <summary>
         /// [常數]預覽中心點座標X
         /// </summary>
-        private const int NEXT_X = 1;
+        private const int UI_X = 1;
         /// <summary>
         /// [常數]預覽中心點座標Y
         /// </summary>
-        private const int NEXT_Y = 1;
+        private const int UI_Y = 1;
         /// <summary>
         /// 1000毫秒(1秒)
         /// </summary>
@@ -291,10 +302,15 @@ namespace Puzzle.Tetris
         [Range(0,9)]
         public int LV = 0;
 
+        private bool _hasHold;
         /// <summary>
         /// 下一個的磚塊組資料
         /// </summary>
         private BrickData _nextBrick;
+        /// <summary>
+        /// 保留的磚塊組資料
+        /// </summary>
+        private BrickData _holdBrick;
         /// <summary>
         /// 當前操作中的磚塊組資料
         /// </summary>
@@ -351,7 +367,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void RandomNextBrick()
         {
-            _nextBrick.SetData(NEXT_X, NEXT_Y, data.RandomType());
+            _nextBrick.SetData(UI_X, UI_Y, data.RandomType());
         }
 
         /// <summary>
@@ -397,6 +413,14 @@ namespace Puzzle.Tetris
             }
         }
         /// <summary>
+        /// 保留即將落下的磚塊
+        /// </summary>
+        private void OnHold(InputAction.CallbackContext cxt)
+        {
+            if (IsCoreLock) return;
+            HoldBrick();
+        }
+        /// <summary>
         /// Input觸發RotaAction用
         /// </summary>
         /// <param name="cxt">輸入訊號</param>
@@ -413,6 +437,24 @@ namespace Puzzle.Tetris
         {
             if (IsCoreLock) return;
             HardDrop();
+        }
+        /// <summary>
+        /// 保存即將落下的方塊(交換一組預留)
+        /// </summary>
+        private void HoldBrick()
+        {
+            if (!_hasHold)
+            {//第一次使用保留
+                _hasHold = true;
+                _holdBrick.SetData(UI_X, UI_Y, _nextBrick.type);
+                RandomNextBrick();
+            }
+            else
+            {//已有保留：即將落下/保留互換
+                BrickData holdTmp = _holdBrick;
+                _holdBrick.SetData(UI_X, UI_Y, _nextBrick.type);
+                _nextBrick.SetData(UI_X, UI_Y, holdTmp.type);
+            }
         }
 
         /// <summary>
@@ -653,20 +695,48 @@ namespace Puzzle.Tetris
                     _boardBricks[x, y].ChangeState(data.GetBoradCell(x, y));
                 }
             //2.刷新預覽
-            for (int y = 0; y < UIHeight; y++) 
+            UpdateNextBrick();
+            //3.刷新保留
+            UpdateHoldBrick();
+            //4.刷新投影&落下磚
+            UpdateGhostBrick();
+            UpdateDropBrick();
+        }
+
+        /// <summary>
+        /// 更新即將落下的磚塊
+        /// </summary>
+        void UpdateNextBrick()
+        {
+            for (int y = 0; y < UIHeight; y++)
                 for (int x = 0; x < UIWidth; x++)
                 {
                     _nextBricks[x, y].ChangeState(data.GetNextUICell(x, y));
                 }
-            //3.刷新保留
-            for (int y = 0; y < UIHeight; y++) 
+            foreach(Vector2Int cell in _nextBrick.Cells)
+            {
+                CellData workData = new CellData();
+                workData.SetData(State.Exist, _nextBrick.type);
+                _nextBricks[cell.x, cell.y].ChangeState(workData);
+            }
+        }
+        /// <summary>
+        /// 更新保留磚塊
+        /// </summary>
+        void UpdateHoldBrick()
+        {
+            for (int y = 0; y < UIHeight; y++)
                 for (int x = 0; x < UIWidth; x++)
                 {
                     _holdBricks[x, y].ChangeState(data.GetHoldUICell(x, y));
                 }
-            //4.刷新投影&落下磚
-            UpdateGhostBrick();
-            UpdateDropBrick();
+            if (!_hasHold) return;
+            foreach (Vector2Int cell in _holdBrick.Cells)
+            {
+                CellData workData = new CellData();
+                workData.SetData(State.Exist, _holdBrick.type);
+                _holdBricks[cell.x, cell.y].ChangeState(workData);
+            }
         }
 
         /// <summary>

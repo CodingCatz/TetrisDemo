@@ -41,6 +41,15 @@
                     "processors": "",
                     "interactions": "Press",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Hold",
+                    "type": "Button",
+                    "id": "090715a8-bf44-45da-8676-7813a68d7424",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -109,6 +118,17 @@
                     "action": "HardDrop",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "ab88bdc5-011f-4582-920a-eaf1e61803a2",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -147,6 +167,15 @@
                     "name": "HardDrop",
                     "type": "Button",
                     "id": "cd688dee-c4e9-4db2-9a3b-06e379a8105b",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "Press",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Hold",
+                    "type": "Button",
+                    "id": "722ec04f-f98e-4e5a-b0d4-04d9dd2e3ee6",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "Press",
@@ -217,6 +246,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "HardDrop",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "7ce77779-f144-4973-af4d-07af15fb4355",
+                    "path": "<Keyboard>/numpadPeriod",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Hold",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
