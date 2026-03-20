@@ -31,6 +31,8 @@ namespace Puzzle.Tetris
         private const int MAX_RECORDS = 10;
         #endregion 基本常數
 
+        public static Action OnLeaderBoardUpdated;
+
         /// <summary>
         /// 讀取排行榜資料
         /// </summary>
@@ -65,6 +67,8 @@ namespace Puzzle.Tetris
             //Debug.Log(json);
             PlayerPrefs.SetString(SCORE_DATA_KEY, json);
             PlayerPrefs.Save();//確保儲存完成
+            //發報廣播給訂閱者
+            OnLeaderBoardUpdated?.Invoke();
         }
     }
 }

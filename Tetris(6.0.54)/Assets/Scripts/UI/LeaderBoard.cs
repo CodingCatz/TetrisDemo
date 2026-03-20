@@ -18,6 +18,12 @@ public class LeaderBoard : MonoBehaviour
     private void OnEnable()
     {
         RefreshUI();
+        ScoreManager.OnLeaderBoardUpdated += RefreshUI;
+    }
+
+    private void OnDisable()
+    {
+        ScoreManager.OnLeaderBoardUpdated -= RefreshUI;
     }
 
     public void RefreshUI()
