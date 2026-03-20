@@ -40,7 +40,7 @@ namespace Puzzle.Tetris
             if (PlayerPrefs.HasKey(SCORE_DATA_KEY))
             {//資料復原
                 string json = PlayerPrefs.GetString(SCORE_DATA_KEY);
-                Debug.Log(json);
+                //Debug.Log(json);
                 return JsonUtility.FromJson<LeaderBoardData>(json);
             }
             return new LeaderBoardData();
@@ -62,7 +62,7 @@ namespace Puzzle.Tetris
             }
             //轉回JSON儲存
             string json = JsonUtility.ToJson(data);
-            Debug.Log(json);
+            //Debug.Log(json);
             PlayerPrefs.SetString(SCORE_DATA_KEY, json);
             PlayerPrefs.Save();//確保儲存完成
         }
