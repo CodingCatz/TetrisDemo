@@ -663,6 +663,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
+  opponent: {fileID: 1918386132}
   moveAction: {fileID: 8210660778797621265, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   rotaAction: {fileID: -5325560922464655333, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -4148793521636453119, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
@@ -1425,6 +1426,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49ae6d13843cdda40974698b8bd23d24, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
+  opponent: {fileID: 529950085}
   moveAction: {fileID: -6691656391101781998, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   rotaAction: {fileID: 5155572976350980423, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -6638344279779222224, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}

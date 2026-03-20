@@ -223,5 +223,30 @@ namespace Puzzle.Tetris
             ClearLine(BoardHeight - 1);//最後一排清除
         }
         #endregion 消除邏輯
+
+        #region 戰鬥機制
+        /// <summary>
+        /// 受到攻擊(對手消除2行以上時)
+        /// </summary>
+        /// <param name="lines">逞罰行數</param>
+        public void OnAttack(int lines)
+        {
+            if (lines <= 0) return;
+            //所有磚塊上移 lines 格
+            for (int y = BoardHeight - 1; y >= lines; y--)
+                for (int x = 0; x < BoardWidth; x++)
+                    Board[x, y] = Board[x, y - lines];
+            //生成垃圾
+            for (int y = 0; y < lines; y++)
+            {
+                int holeX = Random.Range(0, BoardWidth);//隨機決定缺口
+                for (int x = 0; x < BoardWidth; x++)
+                {
+                    if (x == holeX) Board[x, y].Clear();
+                    else Board[x, y].SetData(State.Occupied, RandomType());
+                }
+            }
+        }
+        #endregion 戰鬥機制
     }
 }

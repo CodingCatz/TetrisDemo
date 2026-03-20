@@ -11,6 +11,12 @@ namespace Puzzle.Tetris
     //公開權限 類別 名稱 (:繼承) Unity基礎類別
     public class TetrisBasics : MonoBehaviour
     {
+        #region 對戰設置
+        [Header("對戰設置")]
+        public TetrisBasics opponent;
+        int attackLines = 0;
+        #endregion 對戰設置
+
         #region 基礎資料
         /// <summary>
         /// [靜態]data資料物件實體
@@ -372,14 +378,34 @@ namespace Puzzle.Tetris
             if (rows <= 0) return;
             _clearRows += rows;
             if (LV < _level) LV = _level;
+            
             //計分
             switch (rows)
             {
-                case 1: _score += 100; break;
-                case 2: _score += 300; break;
-                case 3: _score += 500; break;
-                case 4: _score += 800; break;
+                default:
+                    attackLines = 0;
+                    break;
+                case 1: 
+                    _score += 100;
+                    attackLines = 0;
+                    break;
+                case 2: 
+                    _score += 300;
+                    attackLines = 1;
+                    break;
+                case 3: 
+                    _score += 500;
+                    attackLines = 2;
+                    break;
+                case 4: 
+                    _score += 800; 
+                    attackLines = 4;
+                    break;
             }
+
+            //攻擊對手
+            opponent?.data.OnAttack(attackLines);
+
             //刷新分數(視覺同步)
             UpdateInfoUI();
         }
