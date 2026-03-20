@@ -2,7 +2,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;//使用 XXXXXX命名空間
-using UnityEngine.InputSystem;//新式輸入系統
+using UnityEngine.InputSystem;
+using UnityEngine.UI;//新式輸入系統
 
 //命名空間(程式資料夾的概念) 第一層名稱(.的)次一層名稱
 namespace Puzzle.Tetris
@@ -129,6 +130,12 @@ namespace Puzzle.Tetris
         /// 磚塊預覽面板UI
         /// </summary>
         public Transform holdUI;
+        
+        [Header("UI資訊元件")]
+        /// <summary>
+        /// 分數的文字UI元件
+        /// </summary>
+        public Text scoreText;
 
         /// <summary>
         /// 遊戲棋盤二維陣列(複數集合物件)
@@ -373,6 +380,8 @@ namespace Puzzle.Tetris
                 case 3: _score += 500; break;
                 case 4: _score += 800; break;
             }
+            //刷新分數(視覺同步)
+            UpdateInfoUI();
         }
 
         /// <summary>
@@ -789,6 +798,14 @@ namespace Puzzle.Tetris
                     _boardBricks[cell.x, cell.y].ChangeState(workData);
                 }
             }
+        }
+
+        /// <summary>
+        /// 更新遊戲資訊UI
+        /// </summary>
+        void UpdateInfoUI()
+        {
+            if(scoreText) scoreText.text = _score.ToString("00000000");
         }
         #endregion 畫面渲染(更新UI)
     }
