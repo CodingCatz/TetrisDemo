@@ -30,8 +30,10 @@ namespace Puzzle.Tetris
         /// </summary>
         private const int MAX_RECORDS = 10;
         #endregion 基本常數
-
-        public static Action OnLeaderBoardUpdated;
+        /// <summary>
+        /// 真·發報系統(觀察者模式)
+        /// </summary>
+        public static event Action<int> OnLeaderBoardUpdated;
 
         /// <summary>
         /// 讀取排行榜資料
@@ -56,8 +58,16 @@ namespace Puzzle.Tetris
             if (score <= 0) return;//避免無效紀錄
             //先嘗試取得舊的資料
             LeaderBoardData data = LoadLeaderBoard();
-            data.topScores.Add(score);//加入成績
-            data.topScores.Sort((a, b) => b.CompareTo(a));//排序1~11筆
+
+            int insertIndex = 0;//找到排名正確位置(插隊號碼)
+            while (insertIndex < data.topScores.Count && data.topScores[insertIndex] >= score)
+            {
+                insertIndex++;
+            }
+            //直接插入所屬位置
+            data.topScores.Insert(insertIndex, score);
+            //data.topScores.Add(score);//加入成績
+            //data.topScores.Sort((a, b) => b.CompareTo(a));//排序1~11筆
             if (data.topScores.Count > MAX_RECORDS)
             {//移除超出上限數量的分數
                 data.topScores.RemoveRange(MAX_RECORDS, data.topScores.Count - MAX_RECORDS);
@@ -67,8 +77,8 @@ namespace Puzzle.Tetris
             //Debug.Log(json);
             PlayerPrefs.SetString(SCORE_DATA_KEY, json);
             PlayerPrefs.Save();//確保儲存完成
-            //發報廣播給訂閱者
-            OnLeaderBoardUpdated?.Invoke();
+            //發報廣播給訂閱者(沒上榜回傳-1)
+            OnLeaderBoardUpdated?.Invoke(insertIndex < MAX_RECORDS ? insertIndex : -1);
         }
     }
 }

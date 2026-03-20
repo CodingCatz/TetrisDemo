@@ -26,7 +26,7 @@ public class LeaderBoard : MonoBehaviour
         ScoreManager.OnLeaderBoardUpdated -= RefreshUI;
     }
 
-    public void RefreshUI()
+    public void RefreshUI(int highlightIndex = -1)
     {
         if (leaderBoardText)
         {
@@ -37,7 +37,9 @@ public class LeaderBoard : MonoBehaviour
             {
                 if (i < data.topScores.Count)
                 {//有分數紀錄
-                    sb.AppendLine($"No.{i + 1:00} {data.topScores[i]:00000000}");
+                    if(highlightIndex == i) 
+                        sb.AppendLine($"<color=red>No.{i + 1:00} {data.topScores[i]:00000000}</color>");
+                    else sb.AppendLine($"No.{i + 1:00} {data.topScores[i]:00000000}");
                 }
                 else
                 {//無分填補
