@@ -228,7 +228,13 @@ namespace Puzzle.Tetris
         /// <returns>對應的顏色</returns>
         public static Color ActiveColor(this Type type, State state = State.None)
         {
-            Color color = Color.gray;
+            Color color = Color.black;
+            if (state == State.Dead)
+            {//死亡滅頂
+                color.a = 0.7f;
+                return color;
+            }
+
             switch (type)
             {
                 default: 

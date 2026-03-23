@@ -22,10 +22,7 @@ namespace Puzzle.Tetris
             }
         }
         #endregion 基礎元件
-        /// <summary>
-        /// 磚塊陣亡
-        /// </summary>
-        public Color brickDead;
+
         /// <summary>
         /// [唯讀]Brick狀態
         /// </summary>
@@ -61,7 +58,7 @@ namespace Puzzle.Tetris
         public void DeadLock()
         {
             state = State.Dead;
-            color = brickDead;
+            image.color = Type.None.ActiveColor(state);
         }
     }
 }

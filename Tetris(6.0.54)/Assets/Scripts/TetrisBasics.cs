@@ -332,10 +332,6 @@ namespace Puzzle.Tetris
         /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
-        /// <summary>
-        /// 掃描線座標
-        /// </summary>
-        private Vector2Int scanPos;
 
         /// <summary>
         /// 產生新方塊組
@@ -596,15 +592,15 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 執行滅頂動態
         /// </summary>
-        private void DieOut()
-        {
-            if (scanPos.y < Height)
-            {//掃描線從最底往上淹沒
-                for (scanPos.x = 0; scanPos.x < Width; scanPos.x++)
+        private async Task DieOut(CancellationToken token)
+        {//掃描線從最底往上淹沒
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
                 {//Y相同的一橫排變死色
-                    _boardBricks[scanPos.x, scanPos.y].DeadLock();
+                    _boardBricks[x, y].DeadLock();
                 }
-                scanPos.y++;//跳至下一排
+                await Task.Delay(M_SEC / Height, token);
             }
         }
         #endregion 遊戲邏輯控制
@@ -694,9 +690,9 @@ namespace Puzzle.Tetris
                         _isScoreSubmit = true;
                         ScoreManager.SubmitScore(_score);
                     }
-                    DieOut();
-                    await Task.Delay(M_SEC / Height, token);
-                    continue;//省略後續檢測
+                    _isReady = false;
+                    await DieOut(token);
+                    break;
                 }
 
                 if (IsLocked)
