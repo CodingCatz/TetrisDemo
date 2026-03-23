@@ -19,13 +19,13 @@ namespace Puzzle.Tetris
         int attackLines = 0;
         #endregion 對戰設置
 
-        #region 音樂音效庫
+        #region 音效庫
         public AudioClip sfxRotaBrick;
         public AudioClip sfxHoldBrick;
         public AudioClip sfxFastDrop;
         public AudioClip sfxSoftDrop;
         public List<AudioClip> sfxClearLines;
-        #endregion 音樂音效庫
+        #endregion 音效庫
 
         #region 基礎資料
         /// <summary>

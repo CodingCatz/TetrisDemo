@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class LeaderBoard : MonoBehaviour
 {
+    #region 音樂庫
+    public AudioClip bgmGamePlay;
+    #endregion 音樂庫
+
     #region UI元件
     /// <summary>
     /// 總排分數文字元件(顯示1~10名)
@@ -17,6 +21,7 @@ public class LeaderBoard : MonoBehaviour
     #region 更新邏輯
     private void OnEnable()
     {
+        AudioManager.Instance.PlayBGM(bgmGamePlay, 0.5f);
         RefreshUI();
         ScoreManager.OnLeaderBoardUpdated += RefreshUI;
     }

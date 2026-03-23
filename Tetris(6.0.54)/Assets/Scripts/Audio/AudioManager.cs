@@ -97,4 +97,13 @@ public class AudioManager : MonoBehaviour
         BgmSource.clip = clip;
         BgmSource.Play();
     }
+
+    /// <summary>
+    /// 音樂撥放調速
+    /// </summary>
+    /// <param name="pitch">調速</param>
+    public void PitchBGM(float pitch = 1f)
+    {
+        BgmSource.pitch = pitch;
+    }
 }

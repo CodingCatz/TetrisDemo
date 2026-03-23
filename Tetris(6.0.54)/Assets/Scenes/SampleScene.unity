@@ -919,6 +919,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b500b2d4d7c98243a51e2ae8343e9e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bgmGamePlay: {fileID: 8300000, guid: 38f9a013b016f30479825f1b00665520, type: 3}
   leaderBoardText: {fileID: 1204290781}
 --- !u!1 &1171078202
 GameObject:
