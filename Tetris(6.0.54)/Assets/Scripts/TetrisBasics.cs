@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;//使用 XXXXXX命名空間
 using UnityEngine.InputSystem;
 using UnityEngine.UI;//新式輸入系統
+using Random = UnityEngine.Random;
 
 //命名空間(程式資料夾的概念) 第一層名稱(.的)次一層名稱
 namespace Puzzle.Tetris
@@ -16,6 +18,14 @@ namespace Puzzle.Tetris
         public TetrisBasics opponent;
         int attackLines = 0;
         #endregion 對戰設置
+
+        #region 音樂音效庫
+        public AudioClip sfxRotaBrick;
+        public AudioClip sfxHoldBrick;
+        public AudioClip sfxFastDrop;
+        public AudioClip sfxSoftDrop;
+        public List<AudioClip> sfxClearLines;
+        #endregion 音樂音效庫
 
         #region 基礎資料
         /// <summary>
@@ -399,6 +409,7 @@ namespace Puzzle.Tetris
                     break;
             }
 
+            AudioManager.Instance.PlaySFX(sfxClearLines[Random.Range(0, sfxClearLines.Count)]);
             //攻擊對手
             opponent?.data.OnAttack(attackLines);
 
@@ -446,6 +457,7 @@ namespace Puzzle.Tetris
                     if (TryMove(Vector2Int.down))
                     {//成功移動：強制完成一個間隔
                         ResetDropTimer();
+                        AudioManager.Instance.PlaySFX(sfxSoftDrop);
                     }
                     downTimer = 0;
                 }
@@ -487,6 +499,7 @@ namespace Puzzle.Tetris
         /// </summary>
         private void HoldBrick()
         {
+            AudioManager.Instance.PlaySFX(sfxHoldBrick);
             if (!_hasHold)
             {//第一次使用保留
                 _hasHold = true;
@@ -517,6 +530,7 @@ namespace Puzzle.Tetris
                 //不穿牆不卡磚
                 if (data.IsValid(tmpKick))
                 {
+                    AudioManager.Instance.PlaySFX(sfxRotaBrick);
                     _currentBrick = tmpKick;//套用影tmpBrick
                     //觸底檢測
                     CheckGrounded();//任何的移動都要檢查接下來是否撞擊
@@ -567,7 +581,7 @@ namespace Puzzle.Tetris
             //磚塊組=落點
             _currentBrick = data.GetBrickShadow(_currentBrick);
             LockNextDrop();
-
+            AudioManager.Instance.PlaySFX(sfxFastDrop);
             _isProcessing = false;//解鎖
         }
 
@@ -601,6 +615,7 @@ namespace Puzzle.Tetris
                     _boardBricks[x, y].DeadLock();
                 }
                 await Task.Delay(M_SEC / Height, token);
+                AudioManager.Instance.PlaySFX(sfxClearLines[Random.Range(0, sfxClearLines.Count)]);
             }
         }
         #endregion 遊戲邏輯控制

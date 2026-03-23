@@ -664,6 +664,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
   opponent: {fileID: 1918386132}
+  sfxRotaBrick: {fileID: 8300000, guid: f7395428eea700d41b8c759d5100564c, type: 3}
+  sfxHoldBrick: {fileID: 8300000, guid: 3149cafc9bc997c4494463231b5f0ddc, type: 3}
+  sfxFastDrop: {fileID: 8300000, guid: bd312a0eaed97154791e4aeaebc033d7, type: 3}
+  sfxSoftDrop: {fileID: 8300000, guid: 02e7dd1f0bfbefb45bfedb2a6506538e, type: 3}
+  sfxClearLines:
+  - {fileID: 8300000, guid: 01c0d2eb089352847896cde47faa9989, type: 3}
+  - {fileID: 8300000, guid: b5668fb9f1187e5489ae4abb967d7918, type: 3}
+  - {fileID: 8300000, guid: 971293856e9992a4fba1ba6a6c5cee49, type: 3}
   moveAction: {fileID: 8210660778797621265, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   rotaAction: {fileID: -5325560922464655333, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -4148793521636453119, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
@@ -1427,6 +1435,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Puzzle.TetrisBasics
   opponent: {fileID: 529950085}
+  sfxRotaBrick: {fileID: 8300000, guid: f7395428eea700d41b8c759d5100564c, type: 3}
+  sfxHoldBrick: {fileID: 8300000, guid: 3149cafc9bc997c4494463231b5f0ddc, type: 3}
+  sfxFastDrop: {fileID: 8300000, guid: bd312a0eaed97154791e4aeaebc033d7, type: 3}
+  sfxSoftDrop: {fileID: 8300000, guid: 02e7dd1f0bfbefb45bfedb2a6506538e, type: 3}
+  sfxClearLines:
+  - {fileID: 8300000, guid: 01c0d2eb089352847896cde47faa9989, type: 3}
+  - {fileID: 8300000, guid: b5668fb9f1187e5489ae4abb967d7918, type: 3}
+  - {fileID: 8300000, guid: 971293856e9992a4fba1ba6a6c5cee49, type: 3}
   moveAction: {fileID: -6691656391101781998, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   rotaAction: {fileID: 5155572976350980423, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
   softDropAction: {fileID: -6638344279779222224, guid: a3df8c9d2b88cb54bae5fbbdf1887d1f, type: 3}
