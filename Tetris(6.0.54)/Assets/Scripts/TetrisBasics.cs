@@ -362,12 +362,32 @@ namespace Puzzle.Tetris
             }
         }
 
+        private bool LockOutside()
+        {
+            //外部撞擊檢測
+            foreach (Vector2Int cell in _currentBrick.Cells)
+            {
+                if (cell.y < Height)
+                {//至少有一格能進入畫面內
+                    return false;
+                }
+            }
+            return true;
+        }
+
         /// <summary>
         /// 觸底鎖定 & 產生新掉落
         /// </summary>
         private void LockNextDrop()
         {
+            if (LockOutside())
+            {//確認外部撞擊
+                _isGameOver = true;
+                return;
+            }
+
             _isProcessing = true;
+            //正常撞擊
             data.ImpactLock(_currentBrick);
             data.CheckClearLines(ClearRows);
             //NextDrop
