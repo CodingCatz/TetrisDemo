@@ -294,11 +294,19 @@ namespace Puzzle.Tetris
             MoveInput();
         }
         /// <summary>
+        /// 髒標記
+        /// </summary>
+        private bool _isDirty = true;
+        /// <summary>
         /// [視覺更新]確保每幀最後才運行
         /// </summary>
         private void LateUpdate()
         {
-            UpdateUI();
+            if (_isDirty)
+            {
+                UpdateUI();
+                _isDirty = false;
+            }
         }
         #endregion 生命週期
 
@@ -342,6 +350,10 @@ namespace Puzzle.Tetris
         /// 當前操作中的磚塊組資料
         /// </summary>
         private BrickData _currentBrick;
+        /// <summary>
+        /// 磚塊的投影(落點預測UI)
+        /// </summary>
+        private BrickData _ghostData;
 
         /// <summary>
         /// 產生新方塊組
@@ -393,6 +405,7 @@ namespace Puzzle.Tetris
             //NextDrop
             SpawnBrick();
             _isProcessing = false;
+            _isDirty = true;
         }
 
         /// <summary>
@@ -431,10 +444,21 @@ namespace Puzzle.Tetris
 
             AudioManager.Instance.PlaySFX(sfxClearLines[Random.Range(0, sfxClearLines.Count)]);
             //攻擊對手
-            opponent?.data.OnAttack(attackLines);
+            opponent?.ReceiveAttack(attackLines);
 
             //刷新分數(視覺同步)
             UpdateInfoUI();
+            _isDirty = true;
+        }
+
+        /// <summary>
+        /// 承受攻擊
+        /// </summary>
+        /// <param name="line">攻擊行</param>
+        public void ReceiveAttack(int line)
+        {
+            data.OnAttack(line);
+            _isDirty = true;
         }
 
         /// <summary>
@@ -554,10 +578,10 @@ namespace Puzzle.Tetris
                     _currentBrick = tmpKick;//套用影tmpBrick
                     //觸底檢測
                     CheckGrounded();//任何的移動都要檢查接下來是否撞擊
+                    _isDirty = true;
                     break;
                 }
             }
-            
         }
 
         /// <summary>
@@ -574,6 +598,7 @@ namespace Puzzle.Tetris
             {
                 _currentBrick = tmp;//套用影Brick
                 CheckGrounded();//任何的移動都要檢查接下來是否撞擊
+                _isDirty = true;//成功移動後資料須更新
                 return true;
             }
             return false;
@@ -762,11 +787,6 @@ namespace Puzzle.Tetris
 
         #region 畫面渲染(更新UI)
         /// <summary>
-        /// 磚塊的投影(落點預測UI)
-        /// </summary>
-        private BrickData ghostData;
-
-        /// <summary>
         /// 刷新全部界面
         /// </summary>
         private void UpdateUI()
@@ -800,7 +820,7 @@ namespace Puzzle.Tetris
                 }
             foreach(Vector2Int cell in _nextBrick.Cells)
             {
-                CellData workData = new CellData();
+                CellData workData = default;
                 workData.SetData(State.Exist, _nextBrick.type);
                 _nextBricks[cell.x, cell.y].ChangeState(workData);
             }
@@ -818,7 +838,7 @@ namespace Puzzle.Tetris
             if (!_hasHold) return;
             foreach (Vector2Int cell in _holdBrick.Cells)
             {
-                CellData workData = new CellData();
+                CellData workData = default;
                 workData.SetData(State.Exist, _holdBrick.type);
                 _holdBricks[cell.x, cell.y].ChangeState(workData);
             }
@@ -829,13 +849,13 @@ namespace Puzzle.Tetris
         /// </summary>
         void UpdateGhostBrick()
         {
-            ghostData = data.GetBrickShadow(_currentBrick);
-            foreach (Vector2Int cell in ghostData.Cells)
+            _ghostData = data.GetBrickShadow(_currentBrick);
+            foreach (Vector2Int cell in _ghostData.Cells)
             {
                 if (cell.y >= 0 && cell.y < Height && cell.x >= 0 && cell.x < Width)
                 {
-                    CellData workData = new CellData();
-                    workData.SetData(State.Ghost, ghostData.type);
+                    CellData workData = default;
+                    workData.SetData(State.Ghost, _ghostData.type);
                     _boardBricks[cell.x, cell.y].ChangeState(workData);
                 }
             }
@@ -850,7 +870,7 @@ namespace Puzzle.Tetris
             {
                 if (cell.y >= 0 && cell.y < Height && cell.x >= 0 && cell.x < Width)
                 {
-                    CellData workData = new CellData();
+                    CellData workData = default;
                     workData.SetData(State.Exist, _currentBrick.type);
                     _boardBricks[cell.x, cell.y].ChangeState(workData);
                 }
