@@ -372,6 +372,7 @@ namespace Puzzle.Tetris
                 CheckGrounded();
                 ResetDropTimer();
             }
+            _isDirty = true;
         }
 
         private bool LockOutside()
@@ -467,6 +468,8 @@ namespace Puzzle.Tetris
         private void RandomNextBrick()
         {
             _nextBrick.SetData(UI_X, UI_Y, data.RandomType());
+            //刷新預覽
+            UpdateNextBrick();
         }
 
         /// <summary>
@@ -556,6 +559,9 @@ namespace Puzzle.Tetris
                 _holdBrick.SetData(UI_X, UI_Y, _nextBrick.type);
                 _nextBrick.SetData(UI_X, UI_Y, holdTmp.type);
             }
+            //更新下一組&保留區磚塊UI
+            UpdateNextBrick();
+            UpdateHoldBrick();
         }
 
         /// <summary>
@@ -730,6 +736,7 @@ namespace Puzzle.Tetris
             _isReady = true;
             
             RandomNextBrick();//下一組磚塊資料
+            UpdateHoldBrick();//刷新保留區UI
             SpawnBrick();//產生第一塊磚
         }
 
@@ -792,18 +799,13 @@ namespace Puzzle.Tetris
         private void UpdateUI()
         {
             if (!_isReady) return;
-
             //1.刷新Board
             for (int y = 0; y < Height; y++)
                 for (int x = 0; x < Width; x++)
                 {
                     _boardBricks[x, y].ChangeState(data.GetBoradCell(x, y));
                 }
-            //2.刷新預覽
-            UpdateNextBrick();
-            //3.刷新保留
-            UpdateHoldBrick();
-            //4.刷新投影&落下磚
+            //2.刷新投影&落下磚
             UpdateGhostBrick();
             UpdateDropBrick();
         }
