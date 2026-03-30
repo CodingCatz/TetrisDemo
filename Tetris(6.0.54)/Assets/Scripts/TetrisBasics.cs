@@ -283,7 +283,7 @@ namespace Puzzle.Tetris
 
         private void Start()
         {
-            GameStart();
+            //GameStart();
         }
 
         /// <summary>
@@ -686,7 +686,7 @@ namespace Puzzle.Tetris
         /// <summary>
         /// 遊戲流程開始(產生CTS)
         /// </summary>
-        private async void GameStart()
+        public async void GameStart()
         {
             _CTS?.Cancel();//萬一已存在舊的先刪除
             _CTS = new CancellationTokenSource();
@@ -694,6 +694,11 @@ namespace Puzzle.Tetris
             await InitialGame(_CTS.Token);
             //開始遊戲迴圈
             await GameLoop(_CTS.Token);
+        }
+
+        public void GameOver()
+        {
+            _isGameOver = true;
         }
 
         /// <summary>
