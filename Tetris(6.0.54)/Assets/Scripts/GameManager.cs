@@ -10,10 +10,20 @@ public class GameManager : MonoBehaviour
     public CountdownTimer cdTimer;
     public float gameTime = 300;
     private int playerCount = 0;
+    private int playingCount = 0;
 
     public void SetPlayer(int count)
     {//設定玩家數量
         playerCount = count;
+    }
+
+    public void PlayerDead()
+    {
+        playerCount++;
+        if (playerCount >= playingCount)
+        {//玩家全數陣亡：終止遊戲
+            GameStop();
+        }
     }
 
     public void Replay()
@@ -31,18 +41,26 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public void GameStart()
     {
-        cdTimer?.StartTimer(gameTime, TimeUp);
+        cdTimer?.StartTimer(gameTime, GameOver);
         for (int i = 0; i < playerCount; i++)
         {//玩家數量*N：啟動
-            players[i].GameStart();
+            players[i].GameStart(PlayerDead);
+            playingCount++;
         }
         titleCover.SetActive(false);//標題面板物件：關閉
+        playerCount = 0;//還原初始值
+    }
+
+    public void GameStop()
+    {
+        cdTimer?.StopTimer();
+        GameOver();
     }
 
     /// <summary>
     /// 時間到
     /// </summary>
-    void TimeUp()
+    void GameOver()
     {
         for (int i = 0; i < playerCount; i++)
         {//玩家數量*N：死亡
@@ -50,6 +68,4 @@ public class GameManager : MonoBehaviour
         }
         gameOver.SetActive(true);//遊戲結束面板物件：開啟
     }
-
-
 }

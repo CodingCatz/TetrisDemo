@@ -45,6 +45,11 @@ public class CountdownTimer : MonoBehaviour
         onComplete?.Invoke();//完成後觸發的行為
     }
 
+    public void StopTimer()
+    {
+        CancelTimer();
+    }
+
     /// <summary>
     /// 計時運算核心邏輯
     /// </summary>

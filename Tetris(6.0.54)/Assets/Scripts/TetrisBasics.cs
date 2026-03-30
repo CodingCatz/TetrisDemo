@@ -683,11 +683,13 @@ namespace Puzzle.Tetris
         /// 執行序的識別碼
         /// </summary>
         private CancellationTokenSource _CTS;
+        private Action deadAction;
         /// <summary>
         /// 遊戲流程開始(產生CTS)
         /// </summary>
-        public async void GameStart()
+        public async void GameStart(Action onDead)
         {
+            deadAction = onDead;
             _CTS?.Cancel();//萬一已存在舊的先刪除
             _CTS = new CancellationTokenSource();
             //初始化遊戲
@@ -770,6 +772,7 @@ namespace Puzzle.Tetris
                         ScoreManager.SubmitScore(_score);
                     }
                     _isReady = false;
+                    deadAction?.Invoke();
                     await DieOut(token);
                     break;
                 }
