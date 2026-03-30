@@ -9,6 +9,10 @@ using UnityEngine.UI;
 /// </summary>
 public class CountdownTimer : MonoBehaviour
 {
+    #region 常數
+    private const int M = 60;
+    #endregion 常數
+
     #region 基本參數
     private Text _timerText;
     private Text timerText => _timerText ??= GetComponent<Text>();
@@ -19,6 +23,12 @@ public class CountdownTimer : MonoBehaviour
     private void OnDestroy()
     {//安全銷毀機制
         CancelTimer();
+    }
+
+    private string TimeFormat(float sec)
+    {
+        int ceilSec = Mathf.CeilToInt(sec);
+        return (ceilSec / M).ToString("00") + ":" + (ceilSec % M).ToString("00");
     }
 
     /// <summary>
@@ -32,6 +42,7 @@ public class CountdownTimer : MonoBehaviour
         _cts = new CancellationTokenSource();
         //啟動計時
         await ProcessTimer(duration, _cts.Token);
+        onComplete?.Invoke();//完成後觸發的行為
     }
 
     /// <summary>
@@ -47,12 +58,13 @@ public class CountdownTimer : MonoBehaviour
         {
             token.ThrowIfCancellationRequested();
             //刷新UI
-            if (timerText) timerText.text = Mathf.CeilToInt(time).ToString();
+            if (timerText) timerText.text = TimeFormat(time);
             //時間以FPS速率減少：1/FPS(1秒/幀)
             time -= Time.deltaTime;
             //等一幀
             await Task.Yield();
         }
+        if (timerText) timerText.text = TimeFormat(0);
     }
 
     /// <summary>

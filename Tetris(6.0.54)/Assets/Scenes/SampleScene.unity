@@ -579,18 +579,18 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 12800000, guid: 7816725196df37545ad8504d9a5ae901, type: 3}
-    m_FontSize: 35
+    m_FontSize: 80
     m_FontStyle: 3
     m_BestFit: 0
     m_MinSize: 3
-    m_MaxSize: 40
-    m_Alignment: 1
+    m_MaxSize: 80
+    m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1.2
-  m_Text: 
+  m_Text: 00:00
 --- !u!222 &475104071
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -852,6 +852,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 819143500}
+  - component: {fileID: 819143501}
   m_Layer: 0
   m_Name: GM
   m_TagString: Untagged
@@ -874,6 +875,23 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &819143501
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 819143499}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4942a19ffb5f74d46a44bad76c9bfacc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  players:
+  - {fileID: 0}
+  - {fileID: 0}
+  cdTimer: {fileID: 475104072}
+  gameTime: 10
 --- !u!1 &877450731
 GameObject:
   m_ObjectHideFlags: 0
