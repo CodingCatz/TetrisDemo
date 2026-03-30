@@ -220,6 +220,8 @@ namespace Puzzle.Tetris
         }
 
         #region 擴充功能
+        private static Color deadColor 
+            = new Color(0.2f, 0.2f, 0.2f, 1f);
         /// <summary>
         /// [擴充功能]BrickCell顏色控制
         /// </summary>
@@ -228,10 +230,9 @@ namespace Puzzle.Tetris
         /// <returns>對應的顏色</returns>
         public static Color ActiveColor(this Type type, State state = State.None)
         {
-            Color color = Color.black;
+            Color color = deadColor;
             if (state == State.Dead)
             {//死亡滅頂
-                color.a = 0.7f;
                 return color;
             }
 
@@ -244,7 +245,7 @@ namespace Puzzle.Tetris
                 case Type.O: 
                     color = Color.blue; break;
                 case Type.T: 
-                    color = Color.blue + Color.red; break;
+                    color = Color.magenta; break;
                 case Type.S: 
                     color = Color.green; break;
                 case Type.Z: 

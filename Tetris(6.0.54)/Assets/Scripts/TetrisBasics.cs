@@ -659,6 +659,13 @@ namespace Puzzle.Tetris
         /// </summary>
         private async Task DieOut(CancellationToken token)
         {//掃描線從最底往上淹沒
+            for (int y = 0; y < UIHeight; y++)
+                for (int x = 0; x < UIWidth; x++)
+                {
+                    _nextBricks[x, y].DeadLock();
+                    _holdBricks[x, y].DeadLock();
+                }
+
             for (int y = 0; y < Height; y++)
             {
                 for (int x = 0; x < Width; x++)
