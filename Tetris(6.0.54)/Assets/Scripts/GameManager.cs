@@ -62,7 +62,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     void GameOver()
     {
-        for (int i = 0; i < playerCount; i++)
+        for (int i = 0; i < playingCount; i++)
         {//玩家數量*N：死亡
             players[i].GameOver();
         }

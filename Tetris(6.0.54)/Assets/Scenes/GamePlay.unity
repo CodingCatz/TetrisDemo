@@ -1250,7 +1250,7 @@ MonoBehaviour:
   - {fileID: 529950085}
   - {fileID: 1918386132}
   cdTimer: {fileID: 475104072}
-  gameTime: 10
+  gameTime: 300
 --- !u!1 &845105058
 GameObject:
   m_ObjectHideFlags: 0
